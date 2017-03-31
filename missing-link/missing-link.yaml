@@ -2,7 +2,7 @@ image: otbiot/missing-link:latest
 manifests:
   - image: otbiot/missing-link-x86_64
     platform:
-      architecture: x86_86
+      architecture: amd64
       os: linux
   - image: otbiot/missing-link-armhf
     platform:
