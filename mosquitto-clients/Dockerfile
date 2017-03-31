@@ -1,6 +1,6 @@
-FROM otbiot/missing-link-from:latest
+FROM otbiot/alpine:latest
 
-LABEL maintaier="Piers Finlayson <piers@piersandkatie.com>"
+LABEL maintainer="Piers Finlayson <piers@piersandkatie.com>"
 
 LABEL description="Eclipse Mosquitto Clients"
 
