@@ -1,0 +1,10 @@
+image: otbiot/esp8266-build:latest
+manifests:
+  - image: otbiot/esp8266-build-x86_64
+    platform:
+      architecture: x86_86
+      os: linux
+  - image: otbiot/esp8266-build-armhf
+    platform:
+      architecture: armhf
+      os: linux
