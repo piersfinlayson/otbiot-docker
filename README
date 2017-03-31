@@ -2,6 +2,7 @@ A set of scripts to build otb-iot docker images:
 - otbiot/esp8266-build - an Espressif ESP8266 SDK build environment for building otb-iot firmware
 - otbiot/mosquitto-clients - contains mosquitto_sub and mosquitto_pub MQTT clients
 - otbiot/missing-link - scripts to retieve data from otb-iot devices via MQTT and publish to InfluxDB
+- otbiot/alpine - cross architecture alpine image, used by other otbiot images
 
 All of the above images are dual architecture supporting:
 - x86_64
