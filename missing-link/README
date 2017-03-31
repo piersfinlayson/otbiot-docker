@@ -1,0 +1,44 @@
+Container with "missing-link" scripts - that collect information from otb-iot devices via MQTT and dumps that information into an influxdb database.
+
+Creating FROM image
+===================
+
+Go to ../alpine and create the otbiot/alpine image.
+
+Creating individual build image
+==============================
+
+On a machine with the required architecture run:
+
+  docker build -t otbiot/missing-link-<architecture> .
+
+<architecture> should be one of:
+- x86_64
+- armhf
+
+Once created push the image to dockerhub:
+
+  docker push otbiot/missing-link-<architecture>
+
+Creating architecture independent build image
+=============================================
+
+Once both architecture build images have been created, upload the architecture independent (manifest) to dockerhub.
+
+  manifest-tool --docker-cfg '/home/USER/.docker/' push from-spec ./missing-link.yaml
+
+Replace USER with the user's name.  You need to be logged in with docker first.
+  
+
+Container with "missing-link" scripts - that collect information from otb-iot devices via MQTT and dumps that information into an influxdb database.
+
+Using image
+===========
+
+docker run --rm -ti otbiot/missing-link
+cd /scripts/
+edit rssi.py:
+- chipid (12 byte mac address or serial number of otb-iot device)
+- influxdb_host
+- mqtt_host
+./rssi.py

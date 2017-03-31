@@ -1,0 +1,29 @@
+Scripts to create otbiot/mosquitto-clients image.  Contains mosquitto_sub and mosquitto_pub MQTT clients.
+
+Creating FROM image
+===================
+
+Go to ../alpine and create the otbiot/alpine image.
+
+Creating image
+==============
+
+On a machine with the required architecture run:
+
+  docker build -t otbiot/mosquitto-clients-<architecture> .
+
+<architecture> should be one of:
+- x86_64
+- armhf
+
+Once created push the image to dockerhub:
+
+  docker push otbiot/mosquitto-clients-<architecture>
+
+Using image
+===========
+
+docker run --rm -ti otbiot/mosquitto_clients mosquitto_sub -h 1.1.1.1 -t #
+docker run --rm -ti otbiot/mosquitto_clients mosquitto_pub -h 1.1.1.1 -t /otb-iot/all -m trigger/ping
+Container with "missing-link" scripts - that collect information from otb-iot devices via MQTT and dumps that information into an influxdb database.
+

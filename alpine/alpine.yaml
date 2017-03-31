@@ -1,0 +1,10 @@
+image: otbiot/alpine:latest
+manifests:
+  - image: alpine:3.4
+    platform:
+      architecture: amd64
+      os: linux
+  - image: armhf/alpine:3.4
+    platform:
+      architecture: arm
+      os: linux

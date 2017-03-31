@@ -18,7 +18,7 @@ Replace USER with the user's name.  This pushes the from image (manifest) to doc
 Creating individual build image
 ==============================
 
-On a machine with the required architecture runL
+On a machine with the required architecture run:
 
   docker build -t otbiot/esp8266-build-<architecture> .
 
@@ -28,7 +28,7 @@ On a machine with the required architecture runL
 
 Once created push the image to dockerhub:
 
-  docker push otbiot/esp8266-build/<architecture>
+  docker push otbiot/esp8266-build-<architecture>
 
 Creating architecture independent build image
 =============================================

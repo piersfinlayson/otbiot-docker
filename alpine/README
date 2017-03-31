@@ -1,0 +1,19 @@
+Builds a docker manifest for a dual architecture alpine image, used by:
+- otbiot/missing-link
+- otbiot/mosquitto-clients
+
+Support architectures are:
+- amd64/x86_64
+- arm/armhf (Raspberry pi)
+
+Creating manifest
+=================
+
+To create the from image you need to install manifest-tool: https://github.com/estesp/manifest-tool.  It is problematic to install and run on the Raspberry pi, so it is recommended to build otbiot/alpine on an x86_64 architecture.  (The issue seems to be that a golang container is not easily available for the rpi.)
+
+Once manifest-tool is installed otbiot/alpine is created by running:
+
+  manifest-tool --docker-cfg '/home/USER/.docker/' push from-spec ./alpine.yaml
+
+Replace USER with the user's name.  This pushes the from image (manifest) to dockerhub.  You need to be logged in with docker first.
+

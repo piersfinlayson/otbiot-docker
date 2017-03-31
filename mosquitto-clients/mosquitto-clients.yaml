@@ -1,0 +1,10 @@
+image: otbiot/mosquitto-clients:latest
+manifests:
+  - image: otbiot/mosquitto-clients-x86_64
+    platform:
+      architecture: x86_86
+      os: linux
+  - image: otbiot/mosquitto-clients-armhf
+    platform:
+      architecture: armhf
+      os: linux
