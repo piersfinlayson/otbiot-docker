@@ -8,3 +8,37 @@ All of the above images are dual architecture supporting:
 - x86_64
 - armhf (raspberry pi)
 
+Building Images
+===============
+
+To build all the images from scratch, perform the following steps in order:
+
+alpine
+------
+
+- Build alpine-x86_64
+- Build alpine-armhf
+- Build alpine manifest
+
+esp8266-build
+-------------
+
+- Build esp8266-build-from-x86_64
+- Build esp8266-build-from-armhf
+- Build esp8266-build-x86_64
+- Build esp8266-build-armhf
+- Build esp7266-build manifest
+
+missing-link
+------------
+
+- Build missing-link-x86_64
+- Build missing-link-armhf
+- Build missing-link manifest
+
+mosquitto-clients
+-----------------
+
+- Build mosquitto-clients-x86_64
+- Build mosquitto-clients-armhf
+- Build mosquitto-clients manifest
