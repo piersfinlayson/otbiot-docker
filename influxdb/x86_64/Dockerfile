@@ -1,8 +1,8 @@
-FROM armhf/golang:1.6
+FROM golang:1.6
 
 LABEL maintainer="Piers Finlayson <piers@piersandkatie.com>"
 
-LABEL description="otbiot influxdb image - armhf (Raspberry Pi)"
+LABEL description="otbiot influxdb image - x86_64"
 
 RUN apt-get update && apt-get install -y git && apt-get clean && rm -fr /etc/apt/lists/*
 
