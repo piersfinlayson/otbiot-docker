@@ -29,9 +29,6 @@ Once both architecture build images have been created, upload the architecture i
 
 Replace USER with the user's name.  You need to be logged in with docker first.
   
-
-Container with "missing-link" scripts - that collect information from otb-iot devices via MQTT and dumps that information into an influxdb database.
-
 Using image
 ===========
 
