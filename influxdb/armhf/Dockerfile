@@ -18,11 +18,9 @@ RUN mkdir -p $GOPATH/src/github.com/influxdata \
   && mv $GOPATH/bin/* /usr/bin/ \
   && rm -fr $GOPATH/*
 
-COPY types.db /usr/share/collectd/types.db
+COPY ../config.toml /etc/influxdb/config.toml
 
-COPY config.toml /etc/influxdb/config.toml
-
-COPY docker-entrypoint.sh /
+COPY ../docker-entrypoint.sh /
 
 ENV PRE_CREATE_DB otbiot
 
