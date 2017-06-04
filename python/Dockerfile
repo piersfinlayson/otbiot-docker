@@ -6,9 +6,7 @@ COPY requirements.txt /
 
 RUN pip install --no-cache-dir -r /requirements.txt
 
-RUN mkdir -p /usr/src/crond
-
-VOLUME ["/usr/src/crond/"]
+VOLUME ["/var/spool/cron/crontabs/"]
 
 VOLUME ["/usr/src/app/"]
 
