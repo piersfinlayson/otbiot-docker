@@ -1,5 +1,7 @@
 This docker image differs from otbiot-python in that it also contains glibc compatible libc - useful for running mbus_tools for example.
 
+Libc pieces were copied from frolvlad/alpine-glibc (MIT license)
+
 Usage - without cron
 
 docker run -d -v ~/container-data/script1:/usr/src/app piersfinlayson/otbiot-python python script1.py
