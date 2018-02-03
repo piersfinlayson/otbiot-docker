@@ -1,0 +1,16 @@
+A container for developing for the STM32 blue pill (STM32F103C8T6) board, using the arduino framework and platformio.
+
+Here's sample commands to use:
+
+mkdir ~/container-data/pio-stm32-ard-builds
+
+docker run --rm --name pio-stm32-ard-usb -ti -h pio-stm32-ard-usb -v ~/container-data/pio-stm32-ard-builds:/home/build/builds --device /dev/ttyUSB0:/dev/ttyUSB0 piersfinlayson/pio-stm32-ard
+  
+A sample platformio.ini is available at /home/build/platformio.ini.template.  To set up, build and upload an empty sketch:
+
+mkdir sample_project
+cd sample_project
+pio init
+cp ../../platformio.ini.template ./platformio.ini
+echo -e "void setup()\n{\n}\n\nvoid loop()\n{\n}\n" > src/main.ino
+pio run --target upload
