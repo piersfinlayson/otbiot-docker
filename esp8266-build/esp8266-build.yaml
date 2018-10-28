@@ -1,10 +1,10 @@
-image: otbiot/esp8266-build:latest
+image: piersfinlayson/esp8266-build:latest
 manifests:
-  - image: otbiot/esp8266-build-x86_64
+  - image: piersfinlayson/esp8266-build-x86_64:latest
     platform:
       architecture: amd64
       os: linux
-  - image: otbiot/esp8266-build-armhf
+  - image: piersfinlayson/esp8266-build-armhf:latest
     platform:
       architecture: arm
       os: linux

@@ -1,0 +1,10 @@
+image: piersfinlayson/esp8266-build:<VERSION>
+manifests:
+  - image: piersfinlayson/esp8266-build-x86_64:<VERSION>
+    platform:
+      architecture: amd64
+      os: linux
+  - image: piersfinlayson/esp8266-build-armhf:<VERSION>
+    platform:
+      architecture: arm
+      os: linux

@@ -38,6 +38,8 @@ RUN apt-get update && apt-get install -y \
 
 RUN useradd -ms /bin/bash esp && usermod -a -G dialout esp
 
+ADD VERSION /
+
 USER esp
 WORKDIR /home/esp/
 

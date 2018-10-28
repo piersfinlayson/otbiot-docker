@@ -1,15 +1,15 @@
 Creating FROM image
 ===================
 
-otbiot/esp8266-build images for different architectures are built from the same (Debian/Ubuntu) based Dockerfile and image.  However, for different architectures different from images are used - on x86_64 Ubuntu is used, and on armhf Raspbian is used.  To avoid the need for different Dockerfiles for these architectures a single architecture independent from image is created - otbiot/esp8266-build-from.
+piersfinlayson/esp8266-build images for different architectures are built from the same (Debian/Ubuntu) based Dockerfile and image.  However, for different architectures different from images are used - on x86_64 Ubuntu is used, and on armhf Raspbian is used.  To avoid the need for different Dockerfiles for these architectures a single architecture independent from image is created - piersfinlayson/esp8266-build-from.
 
 Today two architectures are supported:
 - amd64/x86_64
 - arm/armhf (rpi)
 
-To create the from image you need to install manifest-tool: https://github.com/estesp/manifest-tool.  It is problematic to install and run on the Raspberry pi, so it is recommended to build otbiot/esp8266-build-from on an x86_64 architecture.  (The issue seems to be that a golang container is not easily available for the rpi.)
+To create the from image you need to install manifest-tool: https://github.com/estesp/manifest-tool.  It is problematic to install and run on the Raspberry pi, so it is recommended to build piersfinlayson/esp8266-build-from on an x86_64 architecture.  (The issue seems to be that a golang container is not easily available for the rpi.)
 
-Once manifest-tool is installed otbiot/esp8266-build-from is created by running:
+Once manifest-tool is installed piersfinlayson/esp8266-build-from is created by running:
 
   manifest-tool --docker-cfg '/home/USER/.docker/' push from-spec ./esp8266-build-from.yaml
 
@@ -18,24 +18,35 @@ Replace USER with the user's name.  This pushes the from image (manifest) to doc
 Creating individual build image
 ==============================
 
+Edit the VERSION file to contain the SDK version.
+
 On a machine with the required architecture run:
 
-  docker build -t otbiot/esp8266-build-<architecture> .
+  docker build -t piersfinlayson/esp8266-build-<architecture> .
 
 <architecture> should be one of:
 - x86_64
 - armhf
 
+Tag the image:
+
+  docker tag piersfinlayson/esp8266-build-<architecture> piersfinlayson/esp8266-build-<architecture>:latest
+  docker tag piersfinlayson/esp8266-build-<architecture> piersfinlayson/esp8266-build-<architecture>:<VERSION>
+
 Once created push the image to dockerhub:
 
-  docker push otbiot/esp8266-build-<architecture>
+  docker push piersfinlayson/esp8266-build-<architecture>:latest
+  docker push piersfinlayson/esp8266-build-<architecture>:<VERSION>
 
 Creating architecture independent build image
 =============================================
 
 Once both architecture build images have been created, upload the architecture independent (manifest) to dockerhub.
 
+  Create esp8266-build-<VERSION>.yaml
+
   manifest-tool --docker-cfg '/home/USER/.docker/' push from-spec ./esp8266-build.yaml
+  manifest-tool --docker-cfg '/home/USER/.docker/' push from-spec ./esp8266-build-<VERSION>.yaml
 
 Replace USER with the user's name.  You need to be logged in with docker first.
   

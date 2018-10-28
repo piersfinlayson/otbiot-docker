@@ -1,4 +1,4 @@
-image: otbiot/esp8266-build-from:latest
+image: piersfinlayson/esp8266-build-from:latest
 manifests:
   - image: ubuntu:16.04
     platform:
