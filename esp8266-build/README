@@ -13,7 +13,7 @@ Edit the VERSION file to contain the SDK version.
 
 On a machine with the required architecture run:
 
-  docker build -t piersfinlayson/esp8266-build-<architecture> .
+  docker build -t piersfinlayson/esp8266-build-<architecture>:VERSION .
 
 <architecture> should be one of:
 - amd64
@@ -21,8 +21,7 @@ On a machine with the required architecture run:
 
 Tag the image:
 
-  docker tag piersfinlayson/esp8266-build-<architecture> piersfinlayson/esp8266-build-<architecture>:latest
-  docker tag piersfinlayson/esp8266-build-<architecture> piersfinlayson/esp8266-build-<architecture>:<VERSION>
+  docker tag piersfinlayson/esp8266-build-<architecture>:VERSION piersfinlayson/esp8266-build-<architecture>:latest
 
 Once created push the image to dockerhub:
 
