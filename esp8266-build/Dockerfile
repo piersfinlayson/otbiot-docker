@@ -1,4 +1,4 @@
-FROM ubuntu:18.04
+FROM piersfinlayson/esp8266-build-from:2.0
 
 LABEL maintainer="Piers Finlayson <piers@piersandkatie.com>"
 
@@ -43,6 +43,8 @@ ADD VERSION /
 USER esp
 WORKDIR /home/esp/
 
+# Orignal is pfalcon's but his doesn't support 2.0.0 yet
+# RUN cd /home/esp && git clone --recursive https://github.com/pfalcon/esp-open-sdk.git
 RUN cd /home/esp && git clone --recursive https://github.com/piersfinlayson/esp-open-sdk.git
 
 RUN cd /home/esp/esp-open-sdk && make && rm -fr /home/esp/esp-open-sdk/crosstool-NG/

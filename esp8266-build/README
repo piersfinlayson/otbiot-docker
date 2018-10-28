@@ -1,10 +1,46 @@
 Creating FROM image
 ===================
 
-There is no longer any need to create a "from" image.  There is now a standard ubuntu:18.04 manifest which contains amd64 and arm images.  Hence a single Dockerfile covers these multiple artchitecture systems.  I build images for:
+To have a single Dockerfile for both amd64 and arm containers we need to create a manifest - essentially a sort of container which links to other containers, depending on the architecture - as the FROM for that Dockerfile.
 
-- amd64
-- arm (rpi)
+To do this, run the following commands - modifying:
+- VERSION as applicable
+- The Ubuntu version if desired
+
+  docker manifest create piersfinlayson/esp8266-build-from:<VERSION> piersfinlayson/ubuntu:18.04 resin/rpi-raspbian:latest
+  docker manifest annotate piersfinlayson/esp8266-build-from:<VERSION> resin/rpi-raspbian:latest --arch arm --os linux
+  docker manifest inspect piersfinlayson/esp8266-build-from:<VERSION>
+
+Should be something like:
+
+{
+   "schemaVersion": 2,
+   "mediaType": "application/vnd.docker.distribution.manifest.list.v2+json",
+   "manifests": [
+      {
+         "mediaType": "application/vnd.docker.distribution.manifest.v2+json",
+         "size": 1150,
+         "digest": "sha256:6b9eb699512656fc6ef936ddeb45ab25edcd17ab94901790989f89dbf782344a",
+         "platform": {
+            "architecture": "amd64",
+            "os": "linux"
+         }
+      },
+      {
+         "mediaType": "application/vnd.docker.distribution.manifest.v2+json",
+         "size": 2601,
+         "digest": "sha256:7b190b0f9115b4a8d7980940e923c137a029aba386368202cc149c6346b84b1d",
+         "platform": {
+            "architecture": "arm",
+            "os": "linux"
+         }
+      }
+   ]
+}
+
+  docker manifest push piersfinlayson/esp8266-build-from:<VERSION>
+
+You should then modify the Dockerfile to FROM the correct new image (manifest).
 
 Creating individual build image
 ==============================
@@ -32,13 +68,6 @@ Creating architecture independent build image
 =============================================
 
 Once both architecture build images have been created, create an architecture independent manifest:
-
-  docker push piersfinlayson/esp8266-build-amd64:latest
-  docker push piersfinlayson/esp8266-build-arm:latest
-  docker push piersfinlayson/esp8266-build-amd64:<VERSION>
-  docker push piersfinlayson/esp8266-build-arm:<VERSION>
-
-(Need to check following bit works!)
 
   docker manifest create piersfinlayson/esp8266-build:latest piersfinlayson/esp8266-build-amd64:latest piersfinlayson/esp8266-build-amd64:latest
   docker manifest annotate piersfinlayson/esp8266-build:latest piersfinlayson/esp8266-build-amd64:latest --arch amd64 --os linux
