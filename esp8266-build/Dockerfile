@@ -1,10 +1,10 @@
-FROM otbiot/esp8266-build-from:latest
+FROM ubuntu:18.04
 
 LABEL maintainer="Piers Finlayson <piers@piersandkatie.com>"
 
 LABEL description="otbiot ESP8266 NonOS SDK Build Container"
 
-RUN apt-get update && apt-get install -y \
+RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
 	autoconf \
 	automake \
 	bash \
@@ -43,7 +43,7 @@ ADD VERSION /
 USER esp
 WORKDIR /home/esp/
 
-RUN cd /home/esp && git clone --recursive https://github.com/pfalcon/esp-open-sdk.git
+RUN cd /home/esp && git clone --recursive https://github.com/piersfinlayson/esp-open-sdk.git
 
 RUN cd /home/esp/esp-open-sdk && make && rm -fr /home/esp/esp-open-sdk/crosstool-NG/
 

@@ -1,19 +1,10 @@
 Creating FROM image
 ===================
 
-piersfinlayson/esp8266-build images for different architectures are built from the same (Debian/Ubuntu) based Dockerfile and image.  However, for different architectures different from images are used - on x86_64 Ubuntu is used, and on armhf Raspbian is used.  To avoid the need for different Dockerfiles for these architectures a single architecture independent from image is created - piersfinlayson/esp8266-build-from.
+There is no longer any need to create a "from" image.  There is now a standard ubuntu:18.04 manifest which contains amd64 and arm images.  Hence a single Dockerfile covers these multiple artchitecture systems.  I build images for:
 
-Today two architectures are supported:
-- amd64/x86_64
-- arm/armhf (rpi)
-
-To create the from image you need to install manifest-tool: https://github.com/estesp/manifest-tool.  It is problematic to install and run on the Raspberry pi, so it is recommended to build piersfinlayson/esp8266-build-from on an x86_64 architecture.  (The issue seems to be that a golang container is not easily available for the rpi.)
-
-Once manifest-tool is installed piersfinlayson/esp8266-build-from is created by running:
-
-  manifest-tool --docker-cfg '/home/USER/.docker/' push from-spec ./esp8266-build-from.yaml
-
-Replace USER with the user's name.  This pushes the from image (manifest) to dockerhub.  You need to be logged in with docker first.
+- amd64
+- arm (rpi)
 
 Creating individual build image
 ==============================
@@ -25,8 +16,8 @@ On a machine with the required architecture run:
   docker build -t piersfinlayson/esp8266-build-<architecture> .
 
 <architecture> should be one of:
-- x86_64
-- armhf
+- amd64
+- arm
 
 Tag the image:
 
@@ -41,13 +32,19 @@ Once created push the image to dockerhub:
 Creating architecture independent build image
 =============================================
 
-Once both architecture build images have been created, upload the architecture independent (manifest) to dockerhub.
+Once both architecture build images have been created, create an architecture independent manifest:
 
-  Create esp8266-build-<VERSION>.yaml
+  docker push piersfinlayson/esp8266-build-amd64:latest
+  docker push piersfinlayson/esp8266-build-arm:latest
+  docker push piersfinlayson/esp8266-build-amd64:<VERSION>
+  docker push piersfinlayson/esp8266-build-arm:<VERSION>
 
-  manifest-tool --docker-cfg '/home/USER/.docker/' push from-spec ./esp8266-build.yaml
-  manifest-tool --docker-cfg '/home/USER/.docker/' push from-spec ./esp8266-build-<VERSION>.yaml
+(Need to check following bit works!)
 
-Replace USER with the user's name.  You need to be logged in with docker first.
-  
+  docker manifest create piersfinlayson/esp8266-build:latest piersfinlayson/esp8266-build-amd64:latest piersfinlayson/esp8266-build-amd64:latest
+  docker manifest annotate piersfinlayson/esp8266-build:latest piersfinlayson/esp8266-build-amd64:latest --arch amd64 --os linux
+  docker manifest annotate piersfinlayson/esp8266-build:latest piersfinlayson/esp8266-build-arm:latest --arch arm --os linux
+  docker manifest create piersfinlayson/esp8266-build:<VERSION> piersfinlayson/esp8266-build-amd64:<VERSION> piersfinlayson/esp8266-build-arm:<VERSION>
+  docker manifest annotate piersfinlayson/esp8266-build:<VERSION> piersfinlayson/esp8266-build-amd64:<VERSION> --arch amd64 --os linux
+  docker manifest annotate piersfinlayson/esp8266-build:<VERSION> piersfinlayson/esp8266-build-arm:<VERSION> --arch arm --os linux
 
