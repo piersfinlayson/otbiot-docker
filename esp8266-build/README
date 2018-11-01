@@ -69,10 +69,12 @@ Creating architecture independent build image
 
 Once both architecture build images have been created, create an architecture independent manifest:
 
-  docker manifest create piersfinlayson/esp8266-build:latest piersfinlayson/esp8266-build-amd64:latest piersfinlayson/esp8266-build-amd64:latest
+  docker manifest create piersfinlayson/esp8266-build:latest piersfinlayson/esp8266-build-amd64:latest piersfinlayson/esp8266-build-arm:latest
   docker manifest annotate piersfinlayson/esp8266-build:latest piersfinlayson/esp8266-build-amd64:latest --arch amd64 --os linux
   docker manifest annotate piersfinlayson/esp8266-build:latest piersfinlayson/esp8266-build-arm:latest --arch arm --os linux
   docker manifest create piersfinlayson/esp8266-build:<VERSION> piersfinlayson/esp8266-build-amd64:<VERSION> piersfinlayson/esp8266-build-arm:<VERSION>
   docker manifest annotate piersfinlayson/esp8266-build:<VERSION> piersfinlayson/esp8266-build-amd64:<VERSION> --arch amd64 --os linux
   docker manifest annotate piersfinlayson/esp8266-build:<VERSION> piersfinlayson/esp8266-build-arm:<VERSION> --arch arm --os linux
+  docker manifest push piersfinlayson/esp8266-build:latest
+  docker manifest push piersfinlayson/esp8266-build:<VERSION>
 
