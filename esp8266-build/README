@@ -67,7 +67,7 @@ Once created push the image to dockerhub:
 Creating architecture independent build image
 =============================================
 
-Once both architecture build images have been created, create an architecture independent manifest.  Note that the first create may need an --amend flag if the manifest already exists on that machine.
+Once both architecture build images have been created, create an architecture independent manifest.  Note that the first create may need an --amend flag if the manifest already exists on that machine.  Not convinced this is working well - seems to just add more images to the manifest.
 
   docker manifest create piersfinlayson/esp8266-build:latest piersfinlayson/esp8266-build-amd64:<VERSION> piersfinlayson/esp8266-build-arm:<VERSION>
   docker manifest annotate piersfinlayson/esp8266-build:latest piersfinlayson/esp8266-build-amd64:<VERSION> --arch amd64 --os linux
