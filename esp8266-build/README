@@ -67,14 +67,12 @@ Once created push the image to dockerhub:
 Creating architecture independent build image
 =============================================
 
-Once both architecture build images have been created, create an architecture independent manifest.  Note that the first create may need an --amend flag if the manifest already exists on that machine.  Not convinced this is working well - seems to just add more images to the manifest.
+Once both architecture build images have been created, create an architecture independent manifest.  Make sure the push includes --purge otherwise the manifest stays on the machine, causing problems in future.
 
-  docker manifest create piersfinlayson/esp8266-build:latest piersfinlayson/esp8266-build-amd64:<VERSION> piersfinlayson/esp8266-build-arm:<VERSION>
+  docker manifest create piersfinlayson/esp8266-build:<VERSION piersfinlayson/esp8266-build-amd64:<VERSION> piersfinlayson/esp8266-build-arm:<VERSION>
   docker manifest annotate piersfinlayson/esp8266-build:latest piersfinlayson/esp8266-build-amd64:<VERSION> --arch amd64 --os linux
   docker manifest annotate piersfinlayson/esp8266-build:latest piersfinlayson/esp8266-build-arm:<VERSION> --arch arm --os linux
-  docker manifest create piersfinlayson/esp8266-build:<VERSION> piersfinlayson/esp8266-build-amd64:<VERSION> piersfinlayson/esp8266-build-arm:<VERSION>
-  docker manifest annotate piersfinlayson/esp8266-build:<VERSION> piersfinlayson/esp8266-build-amd64:<VERSION> --arch amd64 --os linux
-  docker manifest annotate piersfinlayson/esp8266-build:<VERSION> piersfinlayson/esp8266-build-arm:<VERSION> --arch arm --os linux
-  docker manifest push piersfinlayson/esp8266-build:latest
-  docker manifest push piersfinlayson/esp8266-build:<VERSION>
+  docker manifest push --purge piersfinlayson/esp8266-build:<VERSION>
+  docker tag piersfinlayson/esp8266-build:<VERSION> piersfinlayson/esp8266-build:latest
+  docker manifest push --purge piersfinlayson/esp8266-build:latest
 
