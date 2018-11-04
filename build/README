@@ -14,3 +14,4 @@ docker manifest annotate --arch arm --os linux piersfinlayson/build:VERSION pier
 docker manifest inspect piersfinlayson/build:VERSION
 docker manifest push --purge piersfinlayson/build:VERSION
 docker tag piersfinlayson/build:VERSION piersfinlayson/build:latest
+docker push piersfinlayson/build:latest
