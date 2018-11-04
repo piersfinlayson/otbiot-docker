@@ -1,3 +1,27 @@
+The Easy Way
+============
+
+On x86-64 and on the pi run:
+
+./build-container.sh VERSION_NUM ARCH
+
+where VERSION_NUM is e.g. 0.1.0
+      ARCH is amd64 or arm
+
+Once the scripts have complete on BOTH machines run:
+
+./build-manifest
+
+Then on one machine:
+
+git add VERSION
+git commit -m "Updated version number"
+git push
+
+
+Manual Instructions
+===================
+
 update VERSION file
 
 On x86 64-bit machine:
