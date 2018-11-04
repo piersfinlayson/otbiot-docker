@@ -6,7 +6,7 @@ echo "       version: ${VERSION}"
 echo "  architecture: ${ARCH}"
 echo "${VERSION}" > ./VERSION
 
-docker build -t piersfinlayson/build-${ARCH}:${VERSION}
+docker build -t piersfinlayson/build-${ARCH}:${VERSION} .
 docker push piersfinlayson/build-${ARCH}:${VERSION}
 
 
