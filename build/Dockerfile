@@ -10,6 +10,7 @@ RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
 	bash \
 	bison \
 	bzip2 \
+	curl \
 	flex \
 	g++ \
 	gawk \
@@ -18,6 +19,7 @@ RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
 	gperf \
 	help2man \
 	hexedit \
+	i2c-tools \
 	libexpat-dev \
 	libtool \
 	libtool-bin \
@@ -36,7 +38,7 @@ RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
 	vim \
 	wget 
 
-RUN curl https://sh.rustup.rs -sSf | sh
+RUN /usr/bin/curl https://sh.rustup.rs -sSf | sh
 
 RUN useradd -ms /bin/bash build && usermod -a -G dialout build && usermod -a -G i2c build && usermod -a -G spi build
 
