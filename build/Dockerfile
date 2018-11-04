@@ -43,11 +43,11 @@ RUN useradd -ms /bin/bash build && usermod -a -G dialout build && usermod -a -G 
 USER build
 WORKDIR /home/build/
 
-RUN mkdir /home/build/builds
-RUN chown -R build:build /home/build/builds
-
-RUN cd /home/build && /usr/bin/wget https://sh.rustup.rs -O rust.sh && /bin/bash rust.sh -y && rm /rust.sh
+RUN cd /home/build && /usr/bin/wget https://sh.rustup.rs -O rust.sh && /bin/bash rust.sh -y && rm /home/build/rust.sh
 ENV PATH="/home/build/.cargo/bin:${PATH}"
+
+RUN mkdir /home/build/builds
+RUN chown -R build:build /home/build
 
 ADD VERSION /
 VOLUME ["/home/build/builds"]
