@@ -38,19 +38,18 @@ RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
 	vim \
 	wget 
 
-RUN /usr/bin/curl https://sh.rustup.rs -sSf | sh
-
-RUN useradd -ms /bin/bash build && usermod -a -G dialout build && usermod -a -G i2c build && usermod -a -G spi build
-
-ADD VERSION /
+RUN useradd -ms /bin/bash build && usermod -a -G dialout build && usermod -a -G i2c build 
 
 USER build
 WORKDIR /home/build/
 
 RUN mkdir /home/build/builds
 RUN chown -R build:build /home/build/builds
-VOLUME ["/home/build/builds"]
 
+RUN /usr/bin/wget https://sh.rustup.rs -O rust.sh && /bin/bash rust.sh -y && rm /rust.sh
+
+ADD VERSION /
+VOLUME ["/home/build/builds"]
 COPY docker-entrypoint.sh /
 ENTRYPOINT ["/docker-entrypoint.sh"]
 
