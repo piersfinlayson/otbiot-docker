@@ -13,5 +13,6 @@ docker manifest annotate --arch amd64 --os linux piersfinlayson/build:VERSION pi
 docker manifest annotate --arch arm --os linux piersfinlayson/build:VERSION piersfinlayson/build-arm:VERSION
 docker manifest inspect piersfinlayson/build:VERSION
 docker manifest push --purge piersfinlayson/build:VERSION
+docker pull piersfinlayson/build:VERSION
 docker tag piersfinlayson/build:VERSION piersfinlayson/build:latest
 docker push piersfinlayson/build:latest
