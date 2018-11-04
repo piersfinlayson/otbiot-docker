@@ -46,7 +46,8 @@ WORKDIR /home/build/
 RUN mkdir /home/build/builds
 RUN chown -R build:build /home/build/builds
 
-RUN /usr/bin/wget https://sh.rustup.rs -O rust.sh && /bin/bash rust.sh -y && rm /rust.sh
+RUN cd /home/build && /usr/bin/wget https://sh.rustup.rs -O rust.sh && /bin/bash rust.sh -y && rm /rust.sh
+ENV PATH="/home/build/.cargo/bin:${PATH}"
 
 ADD VERSION /
 VOLUME ["/home/build/builds"]
