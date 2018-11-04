@@ -10,6 +10,7 @@ RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
 	bash \
 	bison \
 	bzip2 \
+	cmake \
 	curl \
 	flex \
 	g++ \
