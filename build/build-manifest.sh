@@ -1,5 +1,5 @@
 #!/bin/bash
-${VERSION}=$1
+VERSION=`cat VERSION`
 echo "Create piersfinlayson/build manifests"
 echo "       version: ${VERSION}"
 
