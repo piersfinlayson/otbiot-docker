@@ -49,6 +49,7 @@ RUN /home/build/.cargo/bin/rustup component add rustfmt-preview
 
 ENV PATH="/home/build/.cargo/bin:${PATH}"
 
+COPY .vimrc /home/build/
 RUN mkdir /home/build/builds
 RUN chown -R build:build /home/build/builds
 
