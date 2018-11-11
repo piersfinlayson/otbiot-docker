@@ -3,6 +3,8 @@ VERSION=`cat VERSION`
 echo "Create piersfinlayson/build manifests"
 echo "       version: ${VERSION}"
 
+docker login
+
 # Create VERSION manifest
 docker manifest create piersfinlayson/build:${VERSION} piersfinlayson/build-amd64:${VERSION} piersfinlayson/build-arm:${VERSION}
 docker manifest annotate --arch amd64 --os linux piersfinlayson/build:${VERSION} piersfinlayson/build-amd64:${VERSION}
