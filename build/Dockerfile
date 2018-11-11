@@ -46,6 +46,7 @@ WORKDIR /home/build/
 
 RUN cd /home/build && /usr/bin/wget https://sh.rustup.rs -O rust.sh && /bin/bash rust.sh -y && rm /home/build/rust.sh
 RUN /home/build/.cargo/bin/rustup component add rustfmt-preview
+RUN /home/build/.cargo/bin/rustup component add clippy-preview
 
 ENV PATH="/home/build/.cargo/bin:${PATH}"
 
