@@ -54,6 +54,10 @@ COPY .vimrc /home/build/
 RUN mkdir /home/build/builds
 RUN chown -R build:build /home/build/builds
 
+USER root
+RUN apt install -y pkg-config libssl-dev
+USER build
+
 ADD VERSION /
 VOLUME ["/home/build/builds"]
 COPY docker-entrypoint.sh /
