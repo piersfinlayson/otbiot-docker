@@ -2,5 +2,5 @@
 
 set -e
 cd /home/build/builds/
-echo "Build Container Version $(cat /VERSION)"
+echo "$(cat /VERSION)"
 exec "$@"

@@ -1,0 +1,5 @@
+TARGET=x86_64-linux-musl
+OUTPUT=/opt/cross/x86_64
+COMMON_CONFIG += CFLAGS="-g0 -Os" CXXFLAGS="-g0 -Os" LDFLAGS="-s"
+GCC_CONFIG += --with-arch=x86-64
+

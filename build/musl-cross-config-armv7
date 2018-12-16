@@ -1,0 +1,5 @@
+TARGET=arm-linux-musleabihf
+OUTPUT=/opt/cross/armv7
+COMMON_CONFIG += CFLAGS="-g0 -Os" CXXFLAGS="-g0 -Os" LDFLAGS="-s"
+GCC_CONFIG += --with-arch=armv7-a --with-float=hard --with-fpu=vfpv3-d16
+
