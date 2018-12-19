@@ -74,7 +74,6 @@ RUN apt-get update && \
 		  echo "Not ARM - installing gcc-arm-linux-gnueabihf" && \
 		  DEBIAN_FRONTEND=noninteractive apt-get install -y gcc-arm-linux-gnueabihf ; \ 
 		fi && \
-		curl -sSL https://get.docker.com | sh && \
     apt-get clean && \
     rm -fr /var/lib/apt/lists/*
 
@@ -84,7 +83,6 @@ RUN useradd -ms /bin/bash build && \
     usermod -a -G dialout build && \
 		usermod -a -G i2c build && \
     usermod -a -G sudo build && \
-    usermod -a -G docker build && \
     mkdir /home/build/builds && \
     chown -R build:build /home/build/builds
 USER build
@@ -92,9 +90,10 @@ COPY .vimrc /home/build/
 
 # Build ARMv6, ARMv7 and X86_64 versions of MUSL GCC
 # bsdtar must be used instead of tar, as untaring can fail in Dockerfiles: https://github.com/docker/hub-feedback/issues/727#issuecomment-299533372
-COPY musl-cross-config-armv6 /tmp/
 RUN sudo mkdir -p /opt/cross && \
 	  sudo chown -R build:build /opt/cross
+
+COPY musl-cross-config-armv6 /tmp/
 RUN cd ~/ && \
     git clone https://github.com/richfelker/musl-cross-make.git && \
     cd ~/musl-cross-make && \
@@ -109,6 +108,7 @@ RUN cd ~/ && \
     sudo mv /bin/tar.orig /bin/tar && \
     cd ~/ && \
     sudo rm -fr ~/musl-cross-make
+
 COPY musl-cross-config-armv7 /tmp/
 RUN	cd ~/ && \
     rm -fr musl-cross-make && \
@@ -123,6 +123,7 @@ RUN	cd ~/ && \
     sudo mv /bin/tar.orig /bin/tar && \
     cd ~/ && \
     sudo rm -fr ~/musl-cross-make
+
 COPY musl-cross-config-x86_64 /tmp/
 RUN	cd ~/ && \
     rm -fr musl-cross-make && \
@@ -137,9 +138,31 @@ RUN	cd ~/ && \
     sudo mv /bin/tar.orig /bin/tar && \
     cd ~/ && \
     sudo rm -fr ~/musl-cross-make
+
 RUN sudo ln -s /opt/cross/armv6/bin/arm-linux-musleabihf-gcc /usr/local/bin/armv6-linux-musleabihf-gcc && \
     sudo ln -s /opt/cross/armv7/bin/arm-linux-musleabihf-gcc /usr/local/bin/armv7-linux-musleabihf-gcc && \
     sudo ln -s /opt/cross/x86_64/bin/x86_64-linux-musl-gcc /usr/local/bin/x86_64-linux-musl-gcc
+
+# On ARM we need to build a x86_64 version of gnu gcc
+# Based on https://preshing.com/20141119/how-to-build-a-gcc-cross-compiler/
+COPY build-cross-gcc.sh /tmp/
+RUN if [ $(arch) = "armhf" ] || [ $(arch) = "armv7l" ] || [ $(arch) = "armv6l" ] ; \
+		then \
+		  echo "ARM - build x86_64 gnu gcc" && \
+      cd ~/ && \
+      mkdir working && \
+      cd working && \
+      sudo mv /tmp/build-cross-gcc.sh . && \
+      sudo chown build:build ./build-cross-gcc.sh && \
+      chmod +x ./build-cross-gcc.sh && \
+      ./build-cross-gcc.sh && \
+      sudo ln -s /opt/cross/x86_64-gnu/bin/x86_64-linux-musl-gcc /usr/local/bin/x86_64-linux-gnu-gcc && \
+      cd ~/ && \
+      sudo rm -fr working; \
+		else \
+		  echo "Not ARM - not building x86_64 gnu gcc" && \
+      sudo rm -fr /tmp/build-cross-gcc.sh; \
+		fi 
 
 # Get OpenSSL
 ENV TMP_OPENSSL_DIR=/opt/openssl
