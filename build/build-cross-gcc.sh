@@ -16,7 +16,8 @@ INSTALL_PATH=/opt/cross/x86_64-gnu/
 TARGET=x86_64-linux
 USE_NEWLIB=0
 LINUX_ARCH=x86_64
-CONFIGURATION_OPTIONS="--disable-multilib" # --disable-threads --disable-shared
+# libmpx doesn't compile - PATH_MAX not defined
+CONFIGURATION_OPTIONS="--disable-multilib --disable-libmpx"
 PARALLEL_MAKE=-j4
 BINUTILS_VERSION=binutils-2.27
 GCC_VERSION=gcc-6.4.0

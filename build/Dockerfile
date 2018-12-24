@@ -103,7 +103,7 @@ RUN cd ~/ && \
     sudo rm -f /tmp/musl-cross-config-arvm6 && \
     sudo mv /bin/tar /bin/tar.orig && \
     sudo cp /usr/bin/bsdtar /bin/tar && \
-    make install && \
+    make -j4 install && \
     sudo rm /bin/tar && \
     sudo mv /bin/tar.orig /bin/tar && \
     cd ~/ && \
@@ -118,7 +118,7 @@ RUN	cd ~/ && \
     sudo rm -f /tmp/musl-cross-config-arvm7 && \
     sudo mv /bin/tar /bin/tar.orig && \
     sudo cp /usr/bin/bsdtar /bin/tar && \
-    make install && \
+    make -j4 install && \
     sudo rm /bin/tar && \
     sudo mv /bin/tar.orig /bin/tar && \
     cd ~/ && \
@@ -133,7 +133,7 @@ RUN	cd ~/ && \
     sudo rm -f /tmp/musl-cross-config-x86_64 && \
     sudo mv /bin/tar /bin/tar.orig && \
     sudo cp /usr/bin/bsdtar /bin/tar && \
-    make install && \
+    make -j4 install && \
     sudo rm /bin/tar && \
     sudo mv /bin/tar.orig /bin/tar && \
     cd ~/ && \
@@ -156,7 +156,7 @@ RUN if [ $(arch) = "armhf" ] || [ $(arch) = "armv7l" ] || [ $(arch) = "armv6l" ]
       sudo chown build:build ./build-cross-gcc.sh && \
       chmod +x ./build-cross-gcc.sh && \
       ./build-cross-gcc.sh && \
-      sudo ln -s /opt/cross/x86_64-gnu/bin/x86_64-linux-musl-gcc /usr/local/bin/x86_64-linux-gnu-gcc && \
+      sudo ln -s /opt/cross/x86_64-gnu/bin/x86_64-linux-gcc /usr/local/bin/x86_64-linux-gnu-gcc && \
       cd ~/ && \
       sudo rm -fr working; \
 		else \
@@ -175,6 +175,26 @@ RUN cd $TMP_OPENSSL_DIR && \
     rm openssl-$OPENSSL_VERSION.tar.gz && \
     mv openssl-$OPENSSL_VERSION openssl-src
 
+# Sort out X86 ranlib - only really needed for compiling x86 on ARM
+RUN if [ $(arch) = "armhf" ] || [ $(arch) = "armv7l" ] || [ $(arch) = "armv6l" ] ; \
+    then \
+      echo "ARM - linking to x86_64-linux-ranlib" && \
+      sudo ln -s /opt/cross/x86_64/bin/x86_64-linux-musl-ranlib /usr/local/bin/x86_64-linux-musl-ranlib && \
+      sudo ln -s /opt/cross/x86_64-gnu/bin/x86_64-linux-ranlib /usr/local/bin/x86_64-linux-gnu-ranlib && \
+      sudo ln -s /opt/cross/x86_64/bin/x86_64-linux-musl-ld /usr/local/bin/x86_64-linux-musl-ld && \
+      sudo ln -s /opt/cross/x86_64-gnu/bin/x86_64-linux-ld /usr/local/bin/x86_64-linux-gnu-ld; \
+      sudo ln -s /opt/cross/x86_64/bin/x86_64-linux-musl-ar /usr/local/bin/x86_64-linux-musl-ar && \
+      sudo ln -s /opt/cross/x86_64-gnu/bin/x86_64-linux-ar /usr/local/bin/x86_64-linux-gnu-ar; \
+    else \
+      echo "Not ARM - linking to ranlib" && \
+      sudo ln -s /usr/bin/ranlib /usr/local/bin/x86_64-linux-gnu-ranlib && \
+      sudo ln -s /usr/bin/ranlib /usr/local/bin/x86_64-linux-musl-ranlib && \
+      sudo ln -s /usr/bin/ld /usr/local/bin/x86_64-linux-gnu-ld && \
+      sudo ln -s /usr/bin/ld /usr/local/bin/x86_64-linux-musl-ld; \
+      sudo ln -s /usr/bin/ar /usr/local/bin/x86_64-linux-gnu-ar && \
+      sudo ln -s /usr/bin/ar /usr/local/bin/x86_64-linux-musl-ar; \
+    fi 
+
 # X86_64 GNU
 ENV PLATFORM=x86_64-linux-gnu
 ENV TARGET_CONFIGURE_FLAGS="no-shared no-zlib -fPIC linux-x86_64"
@@ -182,9 +202,10 @@ ENV TARGET_DIR=$TMP_OPENSSL_DIR/openssl-$PLATFORM
 RUN cd ~/ && \
     cp -pr $TMP_OPENSSL_DIR/openssl-src working && \
     cd working && \
-    env CC=$PLATFORM-gcc ./Configure --openssldir=$TARGET_DIR $TARGET_CONFIGURE_FLAGS && \
-    make depend && \
-    make install && \
+    env CC=$PLATFORM-gcc RANLIB=$PLATFORM-ranlib AR=$PLATFORM-ar LD=$PLATFORM-ld ./Configure --openssldir=$TARGET_DIR $TARGET_CONFIGURE_FLAGS && \
+    env make -j4 depend && \
+    env make -j4 && \
+    env make install && \
     cd ~/ && \
     rm -fr working
 ENV X86_64_UNKNOWN_LINUX_GNU_OPENSSL_DIR=$TARGET_DIR
@@ -199,9 +220,10 @@ ENV CC_x86_64_unknown_linux_musl=$PLATFORM-gcc
 RUN cd ~/ && \
     cp -pr $TMP_OPENSSL_DIR/openssl-src working && \
     cd working && \
-    env CC=$CC_x86_64_unknown_linux_musl ./Configure --openssldir=$TARGET_DIR $TARGET_CONFIGURE_FLAGS && \
-    make depend && \
-    make install && \
+    env CC=$CC_x86_64_unknown_linux_musl RANLIB=$PLATFORM-ranlib AR=$PLATFORM-ar LD=$PLATFORM-ld ./Configure --openssldir=$TARGET_DIR $TARGET_CONFIGURE_FLAGS && \
+    env make -j4 depend && \
+    env make -j4 && \
+    env make install && \
     cd ~/ && \
     rm -fr working
 ENV X86_64_UNKNOWN_LINUX_MUSL_OPENSSL_DIR=$TARGET_DIR
@@ -216,8 +238,9 @@ RUN cd ~/ && \
     cp -pr $TMP_OPENSSL_DIR/openssl-src working && \
     cd working && \
     env CC=arm-linux-gnueabihf-gcc ./Configure --openssldir=$TARGET_DIR $TARGET_CONFIGURE_FLAGS && \
-    make depend && \
-    make install && \
+    env make -j4 depend && \
+    env make -j4 && \
+    env make install && \
     cd ~/ && \
     rm -fr working
 ENV ARMV7_UNKNOWN_LINUX_GNUEABIHF_OPENSSL_DIR=$TARGET_DIR
@@ -233,8 +256,9 @@ RUN cd ~/ && \
     cp -pr $TMP_OPENSSL_DIR/openssl-src working && \
     cd working && \
     env CC=$CC_armv7_unknown_linux_musleabihf ./Configure --openssldir=$TARGET_DIR $TARGET_CONFIGURE_FLAGS && \
-    make depend && \
-    make install && \
+    env make -j4 depend && \
+    env make -j4 && \
+    env make install && \
     cd ~/ && \
     rm -fr working
 ENV ARMV7_UNKNOWN_LINUX_MUSLEABIHF_OPENSSL_DIR=$TARGET_DIR
@@ -249,8 +273,9 @@ RUN cd ~/ && \
     cp -pr $TMP_OPENSSL_DIR/openssl-src working && \
     cd working && \
     env CC=arm-linux-gnueabihf-gcc ./Configure --openssldir=$TARGET_DIR $TARGET_CONFIGURE_FLAGS && \
-    make depend && \
-    make install && \
+    env make -j4 depend && \
+    env make -j4 && \
+    env make install && \
     cd ~/ && \
     rm -fr working
 ENV ARM_UNKNOWN_LINUX_GNUEABIHF_OPENSSL_DIR=$TARGET_DIR
@@ -266,8 +291,9 @@ RUN cd ~/ && \
     cp -pr $TMP_OPENSSL_DIR/openssl-src working && \
     cd working && \
     env CC=$CC_arm_unknown_linux_musleabihf ./Configure --openssldir=$TARGET_DIR $TARGET_CONFIGURE_FLAGS && \
-    make depend && \
-    make install && \
+    env make -j4 depend && \
+    env make -j4 && \
+    env make install && \
     cd ~/ && \
     rm -fr working
 ENV ARM_UNKNOWN_LINUX_MUSLEABIHF_OPENSSL_DIR=$TARGET_DIR
@@ -304,7 +330,6 @@ ADD VERSION /
 RUN echo "Container version $(cat /VERSION)" > /VERSION && \
     echo "OpenSSL version" $OPENSSL_VERSION >> /VERSION && \
 		echo "$(su - build -c 'rustc --version')" >> /VERSION && \
-		echo "$(docker --version)" >> /VERSION && \
 		echo "MUSL version $(cat /tmp/musl_ver.txt|awk 'NR == 1')" >> /VERSION && \
 		echo "MUSL GCC version $(cat /tmp/musl_gcc_ver.txt|awk 'NR == 1')" >> /VERSION && \
 		rm /tmp/musl_ver.txt /tmp/musl_gcc_ver.txt
