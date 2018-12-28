@@ -1,0 +1,3 @@
+docker build --no-cache -t piersfinlayson/otbiot-amd64:$(cat ./VERSION) .
+docker build --no-cache -t piersfinlayson/otbiot-armv7l:$(cat ./VERSION) .
+docker build --no-cache -t piersfinlayson/otbiot-armv6l:$(cat ./VERSION) .
