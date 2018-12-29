@@ -2,7 +2,7 @@ FROM piersfinlayson/esp8266-build:3.0.0
 
 LABEL maintainer="Piers Finlayson <piers@piersandkatie.com>"
 
-LABEL description="otbiot Pre-built Images Container"
+LABEL description="otbiot Pre-built Image Container"
 
 USER esp
 RUN cd /home/esp/ && \
