@@ -165,6 +165,7 @@ RUN if [ $(arch) = "armhf" ] || [ $(arch) = "armv7l" ] || [ $(arch) = "armv6l" ]
 		  echo "Not ARM - not building x86_64 gnu gcc" && \
       sudo rm -fr /tmp/build-cross-gcc.sh; \
 		fi 
+ENV CC_x86_64_unknown_linux_gnu=x86_64-linux-gnu-gcc
 
 # Get OpenSSL
 ENV TMP_OPENSSL_DIR=/opt/openssl
