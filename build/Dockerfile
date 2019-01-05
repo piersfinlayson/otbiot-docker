@@ -163,8 +163,9 @@ RUN if [ $(arch) = "armhf" ] || [ $(arch) = "armv7l" ] || [ $(arch) = "armv6l" ]
       sudo rm -fr working; \
 		else \
 		  echo "Not ARM - not building x86_64 gnu gcc" && \
+      sudo ln -s /usr/bin/gcc /usr/local/bin/x86_64-linux-gnu-gcc && \
       sudo rm -fr /tmp/build-cross-gcc.sh; \
-		fi 
+		fi    
 ENV CC_x86_64_unknown_linux_gnu=x86_64-linux-gnu-gcc
 
 # Get OpenSSL
