@@ -3,14 +3,15 @@ The Easy Way
 
 On x86-64 and on the pi run:
 
-./build-container.sh VERSION_NUM ARCH
+./build-container.sh VERSION_NUM
 
-where VERSION_NUM is e.g. 0.1.0
-      ARCH is amd64 or arm
+where VERSION_NUM is e.g. 0.2.2
 
-Once the scripts have complete on BOTH machines run:
+The architecture is automatically detected
 
-./build-manifest
+Once the scripts have completed (including pushing of the new images) on ALL machines run:
+
+./build-manifest.sh
 
 Then on one machine:
 
@@ -18,29 +19,3 @@ git add VERSION
 git commit -m "Updated version number"
 git push
 
-
-Manual Instructions
-===================
-
-update VERSION file
-
-On x86 64-bit machine:
-docker build -t piersfinlayson/build-amd64:VERSION .
-docker push piersfinlayson/build-amd64:VERSION
-
-On raspberry pi:
-docker build -t piersfinlayson/build-arm:VERSION .
-docker push piersfinlayson/build-arm:VERSION
-
-docker manifest create piersfinlayson/build:VERSION piersfinlayson/build-amd64:VERSION piersfinlayson/build-arm:VERSION
-docker manifest annotate --arch amd64 --os linux piersfinlayson/build:VERSION piersfinlayson/build-amd64:VERSION
-docker manifest annotate --arch arm --os linux piersfinlayson/build:VERSION piersfinlayson/build-arm:VERSION
-docker manifest inspect piersfinlayson/build:VERSION
-docker manifest push --purge piersfinlayson/build:VERSION
-
-
-docker manifest create piersfinlayson/build:latest piersfinlayson/build-amd64:VERSION piersfinlayson/build-arm:VERSION
-docker manifest annotate --arch amd64 --os linux piersfinlayson/build:latest piersfinlayson/build-amd64:VERSION
-docker manifest annotate --arch arm --os linux piersfinlayson/build:latest piersfinlayson/build-arm:VERSION
-docker manifest inspect piersfinlayson/build:latest
-docker manifest push --purge piersfinlayson/build:latest
