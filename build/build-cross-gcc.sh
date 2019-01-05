@@ -18,7 +18,6 @@ USE_NEWLIB=0
 LINUX_ARCH=x86_64
 # libmpx doesn't compile - PATH_MAX not defined
 CONFIGURATION_OPTIONS="--disable-multilib --disable-libmpx"
-PARALLEL_MAKE=-j4
 BINUTILS_VERSION=binutils-2.27
 GCC_VERSION=gcc-6.4.0
 LINUX_KERNEL_VERSION=linux-4.9.35

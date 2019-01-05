@@ -93,6 +93,8 @@ COPY .vimrc /home/build/
 RUN sudo mkdir -p /opt/cross && \
 	  sudo chown -R build:build /opt/cross
 
+ARG PARALLEL_MAKE
+
 COPY musl-cross-config-armv6 /tmp/
 RUN cd ~/ && \
     git clone https://github.com/richfelker/musl-cross-make.git && \
@@ -103,7 +105,7 @@ RUN cd ~/ && \
     sudo rm -f /tmp/musl-cross-config-arvm6 && \
     sudo mv /bin/tar /bin/tar.orig && \
     sudo cp /usr/bin/bsdtar /bin/tar && \
-    make -j4 install && \
+    make $PARALLEL_MAKE install && \
     sudo rm /bin/tar && \
     sudo mv /bin/tar.orig /bin/tar && \
     cd ~/ && \
@@ -118,7 +120,7 @@ RUN	cd ~/ && \
     sudo rm -f /tmp/musl-cross-config-arvm7 && \
     sudo mv /bin/tar /bin/tar.orig && \
     sudo cp /usr/bin/bsdtar /bin/tar && \
-    make -j4 install && \
+    make $PARALLEL_MAKE install && \
     sudo rm /bin/tar && \
     sudo mv /bin/tar.orig /bin/tar && \
     cd ~/ && \
@@ -133,7 +135,7 @@ RUN	cd ~/ && \
     sudo rm -f /tmp/musl-cross-config-x86_64 && \
     sudo mv /bin/tar /bin/tar.orig && \
     sudo cp /usr/bin/bsdtar /bin/tar && \
-    make -j4 install && \
+    make $PARALLEL_MAKE install && \
     sudo rm /bin/tar && \
     sudo mv /bin/tar.orig /bin/tar && \
     cd ~/ && \
@@ -155,7 +157,7 @@ RUN if [ $(arch) = "armhf" ] || [ $(arch) = "armv7l" ] || [ $(arch) = "armv6l" ]
       sudo mv /tmp/build-cross-gcc.sh . && \
       sudo chown build:build ./build-cross-gcc.sh && \
       chmod +x ./build-cross-gcc.sh && \
-      ./build-cross-gcc.sh && \
+      env PARALLEL_MAKE=$PARALLEL_MAKE ./build-cross-gcc.sh && \
       sudo ln -s /opt/cross/x86_64-gnu/bin/x86_64-linux-gcc /usr/local/bin/x86_64-linux-gnu-gcc && \
       cd ~/ && \
       sudo rm -fr working; \
@@ -203,8 +205,8 @@ RUN cd ~/ && \
     cp -pr $TMP_OPENSSL_DIR/openssl-src working && \
     cd working && \
     env CC=$PLATFORM-gcc RANLIB=$PLATFORM-ranlib AR=$PLATFORM-ar LD=$PLATFORM-ld ./Configure --openssldir=$TARGET_DIR $TARGET_CONFIGURE_FLAGS && \
-    env make -j4 depend && \
-    env make -j4 && \
+    env make $PARALLEL_MAKE depend && \
+    env make $PARALLEL_MAKE && \
     env make install && \
     cd ~/ && \
     rm -fr working
@@ -221,8 +223,8 @@ RUN cd ~/ && \
     cp -pr $TMP_OPENSSL_DIR/openssl-src working && \
     cd working && \
     env CC=$CC_x86_64_unknown_linux_musl RANLIB=$PLATFORM-ranlib AR=$PLATFORM-ar LD=$PLATFORM-ld ./Configure --openssldir=$TARGET_DIR $TARGET_CONFIGURE_FLAGS && \
-    env make -j4 depend && \
-    env make -j4 && \
+    env make $PARALLEL_MAKE depend && \
+    env make $PARALLEL_MAKE && \
     env make install && \
     cd ~/ && \
     rm -fr working
@@ -238,8 +240,8 @@ RUN cd ~/ && \
     cp -pr $TMP_OPENSSL_DIR/openssl-src working && \
     cd working && \
     env CC=arm-linux-gnueabihf-gcc ./Configure --openssldir=$TARGET_DIR $TARGET_CONFIGURE_FLAGS && \
-    env make -j4 depend && \
-    env make -j4 && \
+    env make $PARALLEL_MAKE depend && \
+    env make $PARALLEL_MAKE && \
     env make install && \
     cd ~/ && \
     rm -fr working
@@ -256,8 +258,8 @@ RUN cd ~/ && \
     cp -pr $TMP_OPENSSL_DIR/openssl-src working && \
     cd working && \
     env CC=$CC_armv7_unknown_linux_musleabihf ./Configure --openssldir=$TARGET_DIR $TARGET_CONFIGURE_FLAGS && \
-    env make -j4 depend && \
-    env make -j4 && \
+    env make $PARALLEL_MAKE depend && \
+    env make $PARALLEL_MAKE && \
     env make install && \
     cd ~/ && \
     rm -fr working
@@ -273,8 +275,8 @@ RUN cd ~/ && \
     cp -pr $TMP_OPENSSL_DIR/openssl-src working && \
     cd working && \
     env CC=arm-linux-gnueabihf-gcc ./Configure --openssldir=$TARGET_DIR $TARGET_CONFIGURE_FLAGS && \
-    env make -j4 depend && \
-    env make -j4 && \
+    env make $PARALLEL_MAKE depend && \
+    env make $PARALLEL_MAKE && \
     env make install && \
     cd ~/ && \
     rm -fr working
@@ -291,8 +293,8 @@ RUN cd ~/ && \
     cp -pr $TMP_OPENSSL_DIR/openssl-src working && \
     cd working && \
     env CC=$CC_arm_unknown_linux_musleabihf ./Configure --openssldir=$TARGET_DIR $TARGET_CONFIGURE_FLAGS && \
-    env make -j4 depend && \
-    env make -j4 && \
+    env make $PARALLEL_MAKE depend && \
+    env make $PARALLEL_MAKE && \
     env make install && \
     cd ~/ && \
     rm -fr working
