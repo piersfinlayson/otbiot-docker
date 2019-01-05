@@ -1,7 +1,7 @@
 The Easy Way
 ============
 
-On x86-64 and on the pi run:
+On x86-64 and on both an ARMv6 and ARMv7 Pi run:
 
 ./build-container.sh VERSION_NUM
 
