@@ -337,7 +337,7 @@ RUN echo "Container version $(cat /VERSION)" > /VERSION && \
 		echo "MUSL version $(cat /tmp/musl_ver.txt|awk 'NR == 1')" >> /VERSION && \
 		echo "MUSL GCC version $(cat /tmp/musl_gcc_ver.txt|awk 'NR == 1')" >> /VERSION && \
     arch=$(dpkg --print-architecture) && \
-		echo "Architecture: $(arch)" >> /VERSION \
+		echo "Architecture: $(arch)" >> /VERSION && \
 		rm /tmp/musl_ver.txt /tmp/musl_gcc_ver.txt
 
 USER build
