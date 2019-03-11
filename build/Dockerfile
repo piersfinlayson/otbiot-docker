@@ -341,7 +341,7 @@ RUN echo "Container version $(cat /VERSION)" > /VERSION && \
 		rm /tmp/musl_ver.txt /tmp/musl_gcc_ver.txt
 
 USER build
-VOLUME ["/home/build/builds"]
+#VOLUME ["/home/build/builds"]
 COPY docker-entrypoint.sh /
 ENTRYPOINT ["/docker-entrypoint.sh"]
 CMD ["/bin/bash"]
