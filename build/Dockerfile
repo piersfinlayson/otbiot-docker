@@ -306,7 +306,8 @@ ENV ARM_UNKNOWN_LINUX_MUSLEABIHF_OPENSSL_INCLUDE_DIR=$TARGET_DIR/include
 
 # Install Rust
 # - Clippy not available on arm
-ENV RUST="1.33" # force container to be rebuilt from here
+# force container to be rebuilt from here
+ENV RUST="1.33"
 WORKDIR /home/build/
 RUN cd /home/build && \
     /usr/bin/wget https://sh.rustup.rs -O rust.sh && \
