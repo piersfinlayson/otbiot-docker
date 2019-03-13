@@ -23,4 +23,4 @@ docker manifest annotate --arch arm --os linux --variant armv7l piersfinlayson/b
 docker manifest inspect piersfinlayson/build:latest
 docker manifest push --purge piersfinlayson/build:latest
 
-
+docker pull piersfinlayson/build:latest
