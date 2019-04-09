@@ -8,12 +8,12 @@ if [ $ARCH == x86_64 ]
     ARCH=amd64
 fi
 
-if [ $ARCH == armv6l ]
+if [ $ARCH == amd64 ]
   then
-    # Raspberry Pi Zeros only have a single core and not enough RAM to do parallel building of GCC
-    PARALLEL_MAKE=
+    PARALLEL_MAKE="-j4"
 else
-  PARALLEL_MAKE="-j4"
+  # Run out of RAM doing parallel make on raspberry pis
+  PARALLEL_MAKE=""
 fi
 
 echo "Create piersfinlayson/build container"

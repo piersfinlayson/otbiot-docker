@@ -145,26 +145,48 @@ RUN sudo ln -s /opt/cross/armv6/bin/arm-linux-musleabihf-gcc /usr/local/bin/armv
     sudo ln -s /opt/cross/armv7/bin/arm-linux-musleabihf-gcc /usr/local/bin/armv7-linux-musleabihf-gcc && \
     sudo ln -s /opt/cross/x86_64/bin/x86_64-linux-musl-gcc /usr/local/bin/x86_64-linux-musl-gcc
 
+# We need an ARMv6 version of GCC, as the Ubuntu shipped one is for ARMv7
+COPY build-cross-gcc-armv6.sh /tmp/
+RUN if [ $(arch) = "amd64" ] || [ $(arch) = "x86_64" ] || [ $(arch) = "armv7l" ] ; \
+		then \
+      echo "Build ARMv6 gnu gcc" && \
+      cd ~/ && \
+      mkdir working && \
+      cd working && \
+      sudo mv /tmp/build-cross-gcc-armv6.sh . && \
+      sudo chown build:build ./build-cross-gcc-armv6.sh && \
+      chmod +x ./build-cross-gcc-armv6.sh && \
+      env PARALLEL_MAKE=$PARALLEL_MAKE ./build-cross-gcc-armv6.sh && \
+      sudo ln -s /opt/cross/armv6-gnu/bin/arm-unknown-linux-gnueabihf-gcc /usr/local/bin/armv6-linux-gnueabihf-gcc && \
+      cd ~/ && \
+      sudo rm -fr working; \
+    else \
+		  echo "ARMv6 - not building ARMv6 gnu gcc" && \
+      sudo ln -s /usr/bin/gcc /usr/local/bin/armv6-linux-gnueabihf-gcc && \
+      sudo rm -fr /tmp/build-cross-gcc-armv6.sh; \
+		fi    
+ENV CC_arm_unknown_linux_gnueabihf=armv6-linux-gnueabihf-gcc
+
 # On ARM we need to build a x86_64 version of gnu gcc
 # Based on https://preshing.com/20141119/how-to-build-a-gcc-cross-compiler/
-COPY build-cross-gcc.sh /tmp/
+COPY build-cross-gcc-x86.sh /tmp/
 RUN if [ $(arch) = "armhf" ] || [ $(arch) = "armv7l" ] || [ $(arch) = "armv6l" ] ; \
 		then \
 		  echo "ARM - build x86_64 gnu gcc" && \
       cd ~/ && \
       mkdir working && \
       cd working && \
-      sudo mv /tmp/build-cross-gcc.sh . && \
-      sudo chown build:build ./build-cross-gcc.sh && \
-      chmod +x ./build-cross-gcc.sh && \
-      env PARALLEL_MAKE=$PARALLEL_MAKE ./build-cross-gcc.sh && \
+      sudo mv /tmp/build-cross-gcc-x86.sh . && \
+      sudo chown build:build ./build-cross-gcc-x86.sh && \
+      chmod +x ./build-cross-gcc-x86.sh && \
+      env PARALLEL_MAKE=$PARALLEL_MAKE ./build-cross-gcc-x86.sh && \
       sudo ln -s /opt/cross/x86_64-gnu/bin/x86_64-linux-gcc /usr/local/bin/x86_64-linux-gnu-gcc && \
       cd ~/ && \
       sudo rm -fr working; \
 		else \
 		  echo "Not ARM - not building x86_64 gnu gcc" && \
       sudo ln -s /usr/bin/gcc /usr/local/bin/x86_64-linux-gnu-gcc && \
-      sudo rm -fr /tmp/build-cross-gcc.sh; \
+      sudo rm -fr /tmp/build-cross-gcc-x86.sh; \
 		fi    
 ENV CC_x86_64_unknown_linux_gnu=x86_64-linux-gnu-gcc
 
@@ -276,7 +298,7 @@ ENV TARGET_DIR=$TMP_OPENSSL_DIR/openssl-$PLATFORM
 RUN cd ~/ && \
     cp -pr $TMP_OPENSSL_DIR/openssl-src working && \
     cd working && \
-    env CC=arm-linux-gnueabihf-gcc ./Configure --openssldir=$TARGET_DIR $TARGET_CONFIGURE_FLAGS && \
+    env CC=$CC_arm_unknown_linux_gnueabihf ./Configure --openssldir=$TARGET_DIR $TARGET_CONFIGURE_FLAGS && \
     env make $PARALLEL_MAKE depend && \
     env make $PARALLEL_MAKE && \
     env make install && \
@@ -327,7 +349,7 @@ RUN echo "[target.x86_64-unknown-linux-gnu]\nlinker = \"x86_64-linux-gnu-gcc\"\n
     echo "[target.x86_64-unknown-linux-musl]\nlinker = \"x86_64-linux-musl-gcc\"\n" >> /home/build/.cargo/config && \
 		echo "[target.armv7-unknown-linux-gnueabihf]\nlinker = \"arm-linux-gnueabihf-gcc\"\n" >> /home/build/.cargo/config && \
 		echo "[target.armv7-unknown-linux-musleabihf]\nlinker = \"armv7-linux-musleabihf-gcc\"\n" >> /home/build/.cargo/config && \
-    echo "[target.arm-unknown-linux-gnueabihf]\nlinker = \"arm-linux-gnueabihf-gcc\"\n" >> /home/build/.cargo/config && \
+    echo "[target.arm-unknown-linux-gnueabihf]\nlinker = \"armv6-linux-gnueabihf-gcc\"\n" >> /home/build/.cargo/config && \
 		echo "[target.arm-unknown-linux-musleabihf]\nlinker = \"armv6-linux-musleabihf-gcc\"\n" >> /home/build/.cargo/config
 
 # Finish up
