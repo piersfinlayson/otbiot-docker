@@ -1,4 +1,4 @@
-FROM piersfinlayson/esp8266-build-from:2.0
+FROM piersfinlayson/esp8266-build-from:2.1
 
 LABEL maintainer="Piers Finlayson <piers@piersandkatie.com>"
 

@@ -7,8 +7,8 @@ To do this, run the following commands - modifying:
 - VERSION as applicable
 - The Ubuntu version if desired
 
-  docker manifest create piersfinlayson/esp8266-build-from:<VERSION> piersfinlayson/ubuntu:18.04 resin/rpi-raspbian:latest
-  docker manifest annotate piersfinlayson/esp8266-build-from:<VERSION> resin/rpi-raspbian:latest --arch arm --os linux
+  docker manifest create piersfinlayson/esp8266-build-from:<VERSION> piersfinlayson/ubuntu:18.04 balenalib/rpi-raspbian:stretch
+  docker manifest annotate piersfinlayson/esp8266-build-from:<VERSION> balenalib/rpi-raspbian:stretch --arch arm --os linux
   docker manifest inspect piersfinlayson/esp8266-build-from:<VERSION>
 
 Should be something like:
