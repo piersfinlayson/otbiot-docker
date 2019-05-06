@@ -18,6 +18,7 @@ RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
 	gperf \
 	help2man \
 	hexedit \
+	i2c-tools \
 	libexpat-dev \
 	libtool \
 	libtool-bin \
