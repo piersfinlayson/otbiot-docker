@@ -75,5 +75,5 @@ Once both architecture build images have been created, create an architecture in
   docker manifest push --purge piersfinlayson/esp8266-build:<VERSION>
   docker pull piersfinlayson/esp8266-build:<VERSION>
   docker tag piersfinlayson/esp8266-build:<VERSION> piersfinlayson/esp8266-build:latest
-  docker manifest push --purge piersfinlayson/esp8266-build:latest
+  docker push piersfinlayson/esp8266-build:latest
 
