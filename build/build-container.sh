@@ -23,7 +23,7 @@ echo "  PARALLEL_MAKE: ${PARALLEL_MAKE}"
 echo "${VERSION}" > ./VERSION
 
 docker build --build-arg PARALLEL_MAKE=$PARALLEL_MAKE -t piersfinlayson/build-${ARCH}:${VERSION} .
-docker login
+docker login -u piersfinlayson
 docker push piersfinlayson/build-${ARCH}:${VERSION}
 
 
