@@ -7,8 +7,8 @@ To do this, run the following commands - modifying:
 - VERSION as applicable
 - The Ubuntu version if desired
 
-  docker manifest create piersfinlayson/esp8266-build-from:<VERSION> piersfinlayson/ubuntu:18.04 resin/rpi-raspbian:latest
-  docker manifest annotate piersfinlayson/esp8266-build-from:<VERSION> resin/rpi-raspbian:latest --arch arm --os linux
+  docker manifest create piersfinlayson/esp8266-build-from:<VERSION> piersfinlayson/ubuntu:18.04 balenalib/rpi-raspbian:stretch
+  docker manifest annotate piersfinlayson/esp8266-build-from:<VERSION> balenalib/rpi-raspbian:stretch --arch arm --os linux
   docker manifest inspect piersfinlayson/esp8266-build-from:<VERSION>
 
 Should be something like:
@@ -69,10 +69,11 @@ Creating architecture independent build image
 
 Once both architecture build images have been created, create an architecture independent manifest.  Make sure the push includes --purge otherwise the manifest stays on the machine, causing problems in future.
 
-  docker manifest create piersfinlayson/esp8266-build:<VERSION piersfinlayson/esp8266-build-amd64:<VERSION> piersfinlayson/esp8266-build-arm:<VERSION>
-  docker manifest annotate piersfinlayson/esp8266-build:latest piersfinlayson/esp8266-build-amd64:<VERSION> --arch amd64 --os linux
-  docker manifest annotate piersfinlayson/esp8266-build:latest piersfinlayson/esp8266-build-arm:<VERSION> --arch arm --os linux
+  docker manifest create piersfinlayson/esp8266-build:<VERSION> piersfinlayson/esp8266-build-amd64:<VERSION> piersfinlayson/esp8266-build-arm:<VERSION>
+  docker manifest annotate piersfinlayson/esp8266-build:<VERSION> piersfinlayson/esp8266-build-amd64:<VERSION> --arch amd64 --os linux
+  docker manifest annotate piersfinlayson/esp8266-build:<VERSION> piersfinlayson/esp8266-build-arm:<VERSION> --arch arm --os linux
   docker manifest push --purge piersfinlayson/esp8266-build:<VERSION>
+  docker pull piersfinlayson/esp8266-build:<VERSION>
   docker tag piersfinlayson/esp8266-build:<VERSION> piersfinlayson/esp8266-build:latest
-  docker manifest push --purge piersfinlayson/esp8266-build:latest
+  docker push piersfinlayson/esp8266-build:latest
 

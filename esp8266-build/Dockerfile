@@ -1,4 +1,4 @@
-FROM piersfinlayson/esp8266-build-from:2.0
+FROM piersfinlayson/esp8266-build-from:2.1
 
 LABEL maintainer="Piers Finlayson <piers@piersandkatie.com>"
 
@@ -18,6 +18,7 @@ RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
 	gperf \
 	help2man \
 	hexedit \
+	i2c-tools \
 	libexpat-dev \
 	libtool \
 	libtool-bin \
@@ -30,13 +31,23 @@ RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
 	python-serial \
 	python-sphinx \
 	sed \
+	sudo \
 	texinfo \
 	unzip \
 	unrar-free \
 	vim \
-	wget 
+	wget && \
+        if [ $(arch) = "armhf" ] || [ $(arch) = "armv7l" ] || [ $(arch) = "armv6l" ] ; \
+        then \
+                echo "ARM - installing wiringPi" && \
+                DEBIAN_FRONTEND=noninteractive apt install -y wiringpi ; \
+        fi 
 
-RUN useradd -ms /bin/bash esp && usermod -a -G dialout esp
+ADD sudoers /etc/sudoers.d/nopasswd
+RUN useradd -ms /bin/bash esp && \
+    usermod -a -G dialout esp && \
+    usermod -a -G i2c esp && \
+    usermod -a -G sudo esp
 
 ADD VERSION /
 
