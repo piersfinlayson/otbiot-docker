@@ -18,10 +18,10 @@ USE_NEWLIB=0
 LINUX_ARCH=arm
 # libmpx doesn't compile - PATH_MAX not defined
 CONFIGURATION_OPTIONS="--disable-multilib --disable-libmpx --with-arch=armv6 --with-fpu=vfp --with-float=hard"
-BINUTILS_VERSION=binutils-2.27
-GCC_VERSION=gcc-6.4.0
+BINUTILS_VERSION=binutils-2.31
+GCC_VERSION=gcc-8.3.0
 LINUX_KERNEL_VERSION=linux-4.9.35
-GLIBC_VERSION=glibc-2.20
+GLIBC_VERSION=glibc-2.28
 MPFR_VERSION=mpfr-3.1.4
 GMP_VERSION=gmp-6.1.1
 MPC_VERSION=mpc-1.0.3
