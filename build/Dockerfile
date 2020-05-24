@@ -36,6 +36,7 @@ RUN apt-get update && \
 		ca-certificates \
 		cmake \
 		curl \
+		default-jdk \
 		flex \
 		g++ \
 		gawk \
@@ -49,6 +50,7 @@ RUN apt-get update && \
 		libtool \
 		libtool-bin \
 		make \
+		maven \
 		ncurses-dev \
 		nano \
 		patch \
@@ -363,6 +365,8 @@ RUN echo "Container version $(cat /VERSION)" > /VERSION && \
     arch=$(dpkg --print-architecture) && \
 		echo "Architecture: $(arch)" >> /VERSION && \
 		rm /tmp/musl_ver.txt /tmp/musl_gcc_ver.txt
+
+ENV JAVA_HOME=/usr/lib/jvm/default-java
 
 USER build
 #VOLUME ["/home/build/builds"]
