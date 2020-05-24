@@ -1,2 +1,7 @@
+<<<<<<< HEAD
 # Allow group sudo to use `sudo` without a password.
 %sudo   ALL=(ALL:ALL) NOPASSWD:ALL
+=======
+# Allow group sudo to use `sudo` without a password.
+%sudo   ALL=(ALL:ALL) NOPASSWD:ALL
+>>>>>>> 404bd3039c91ac640fbd93d3532df7864bff3e53
