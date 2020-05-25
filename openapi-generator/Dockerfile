@@ -1,4 +1,4 @@
-FROM piersfinlayson/build-amd64:0.3.1
+FROM piersfinlayson/build-amd64:0.3.2
 
 LABEL maintainer="Piers Finlayson <piers@piersandkatie.com>"
 
