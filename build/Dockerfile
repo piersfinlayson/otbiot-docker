@@ -196,7 +196,7 @@ ENV CC_x86_64_unknown_linux_gnu=x86_64-linux-gnu-gcc
 ENV TMP_OPENSSL_DIR=/opt/openssl
 RUN sudo mkdir -p $TMP_OPENSSL_DIR && \
 	  sudo chown -R build:build /opt/openssl
-ENV OPENSSL_VERSION=1.1.1d
+ENV OPENSSL_VERSION=1.1.1g
 RUN cd $TMP_OPENSSL_DIR && \
     wget https://www.openssl.org/source/openssl-$OPENSSL_VERSION.tar.gz && \
     tar xzf openssl-$OPENSSL_VERSION.tar.gz && \
@@ -331,7 +331,7 @@ ENV ARM_UNKNOWN_LINUX_MUSLEABIHF_OPENSSL_INCLUDE_DIR=$TARGET_DIR/include
 # Install Rust
 # - Clippy not available on arm
 # force container to be rebuilt from here
-ENV RUST="1.44"
+ENV RUST="1.44.0"
 WORKDIR /home/build/
 RUN cd /home/build && \
     /usr/bin/wget https://sh.rustup.rs -O rust.sh && \
