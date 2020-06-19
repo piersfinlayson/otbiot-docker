@@ -1,0 +1,35 @@
+// https://www.jenkins.io/doc/book/pipeline/syntax
+pipeline {
+    agent {
+        label 'amd64'
+    }
+    stages {
+        stage('Clone') {
+            steps {
+                withCredentials([usernamePassword(credentialsId: 'github.piersfinlayson', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+                    sh '''
+                        mkdir ~/tmp && \
+                        git clone https://piersfinlayson:$PASSWORD@github.com/piersfinlayson/otbiot-docker && \
+                        cd otbiot-docker/openapi-generator && \
+                        CURV=$(cat ./VERSION) && \
+                        cat CURV > ~/tmp/CURV && \
+                        echo "Current version is: $CURV" && \
+                        NEWV=echo "${CURV%.*}.$((${CURV##*.}+1))" && \
+                        cat NEWV > ./VERSION && \
+                        echo "New version will be: $NEWV"
+                    '''
+                }
+            }
+        }
+        stage('Build') {
+            steps {
+                sh '''
+                    cd ~/otbiot-docker/openapi-generator && \
+                    NEWV=$(cat ./VERSION) && \
+                    echo "Building version: $NEWV" && \
+                    docker build . -t piersfinlayson/openapi-gen-amd64:$NEWV
+                '''
+            }
+        }
+    }
+}
