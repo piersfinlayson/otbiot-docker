@@ -15,7 +15,7 @@ pipeline {
                         echo $CURV > ~/tmp/CURV && \
                         echo "Current version is: $CURV" && \
                         NEWV=$(echo "${CURV%.*}.$((${CURV##*.}+1))") && \
-                        echo ${NEWV} > ./VERSION && \
+                        echo $NEWV > ./VERSION && \
                         echo "New version will be: $NEWV"
                     '''
                 }
@@ -24,7 +24,7 @@ pipeline {
         stage('Build') {
             steps {
                 sh '''
-                    cd ~/otbiot-docker/openapi-generator && \
+                    cd otbiot-docker/openapi-generator && \
                     NEWV=$(cat ./VERSION) && \
                     echo "Building version: $NEWV" && \
                     docker build . -t piersfinlayson/openapi-gen-amd64:$NEWV
