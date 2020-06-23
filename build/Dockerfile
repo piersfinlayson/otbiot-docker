@@ -97,11 +97,14 @@ RUN sudo mkdir -p /opt/cross && \
 
 ARG PARALLEL_MAKE
 
+# Rust as of 1.44.1 doesn't support MUSL libc 1.2.0
+ENV MUSL_VER=1.1.24
+RUN echo $MUSL_VER > /tmp/musl_ver.txt 
 COPY musl-cross-config-armv6 /tmp/
 RUN cd ~/ && \
     git clone https://github.com/richfelker/musl-cross-make.git && \
     cd ~/musl-cross-make && \
-    grep MUSL_VER Makefile | awk '{print $3}' | awk '{print $1}' > /tmp/musl_ver.txt && \
+    sed -i "s/MUSL_VER = .*$/MUSL_VER = $MUSL_VER/g" Makefile && \
     grep GCC_VER Makefile | awk '{print $3}' | awk '{print $1}' > /tmp/musl_gcc_ver.txt && \
     cp /tmp/musl-cross-config-armv6 ./config.mak && \
     sudo rm -f /tmp/musl-cross-config-arvm6 && \
@@ -118,6 +121,7 @@ RUN	cd ~/ && \
     rm -fr musl-cross-make && \
     git clone https://github.com/richfelker/musl-cross-make.git && \
     cd ~/musl-cross-make && \
+    sed -i "s/MUSL_VER = .*$/MUSL_VER = $MUSL_VER/g" Makefile && \
     cp /tmp/musl-cross-config-armv7 ./config.mak && \
     sudo rm -f /tmp/musl-cross-config-arvm7 && \
     sudo mv /bin/tar /bin/tar.orig && \
@@ -133,6 +137,7 @@ RUN	cd ~/ && \
     rm -fr musl-cross-make && \
     git clone https://github.com/richfelker/musl-cross-make.git && \
     cd ~/musl-cross-make && \
+    sed -i "s/MUSL_VER = .*$/MUSL_VER = $MUSL_VER/g" Makefile && \
     cp /tmp/musl-cross-config-x86_64 ./config.mak && \
     sudo rm -f /tmp/musl-cross-config-x86_64 && \
     sudo mv /bin/tar /bin/tar.orig && \
