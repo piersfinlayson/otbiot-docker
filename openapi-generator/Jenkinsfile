@@ -15,7 +15,7 @@ pipeline {
                         cat CURV > ~/tmp/CURV && \
                         echo "Current version is: $CURV" && \
                         NEWV=echo "${CURV%.*}.$((${CURV##*.}+1))" && \
-                        cat NEWV > ./VERSION && \
+                        echo $NEWV > ./VERSION && \
                         echo "New version will be: $NEWV"
                     '''
                 }
