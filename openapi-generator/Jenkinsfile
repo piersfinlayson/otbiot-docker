@@ -12,9 +12,9 @@ pipeline {
                         git clone https://piersfinlayson:$PASSWORD@github.com/piersfinlayson/otbiot-docker && \
                         cd otbiot-docker/openapi-generator && \
                         CURV=$(cat ./VERSION) && \
-                        cat CURV > ~/tmp/CURV && \
+                        echo $CURV > ~/tmp/CURV && \
                         echo "Current version is: $CURV" && \
-                        NEWV=echo "${CURV%.*}.$((${CURV##*.}+1))" && \
+                        NEWV=$(echo "${CURV%.*}.$((${CURV##*.}+1))") && \
                         echo $NEWV > ./VERSION && \
                         echo "New version will be: $NEWV"
                     '''
