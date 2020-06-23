@@ -1,0 +1,98 @@
+pipeline {
+    agent none
+    stages {
+        stage('Build Containers') {
+            parallel {
+                stage('amd64')
+                {
+                    agent {
+                        label 'amd64'
+                    }
+                    steps {
+                        withCredentials([usernamePassword(credentialsId: 'docker.piersfinlayson', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+                            sh '''
+                            export ARCH=amd64 && \
+                            export VERSION=0.3.6 && \
+                            rm -fr otbiot-docker && \
+                            git clone https://github.com/piersfinlayson/otbiot-docker && \
+                            cd otbiot-docker/build && \
+                            ./build-container-no-upload.sh $VERSION && \
+                            docker login -u piersfinlayson -p $PASSWORD && \
+                            docker push piersfinlayson/build-$ARCH:$VERSION
+                            '''
+                        }
+                    }
+                }
+                stage('armv7l')
+                {
+                    agent {
+                        label 'armv7l'
+                    }
+                    steps {
+                        withCredentials([usernamePassword(credentialsId: 'docker.piersfinlayson', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+                            sh '''
+                            export ARCH=armv7l && \
+                            export VERSION=0.3.6 && \
+                            rm -fr otbiot-docker && \
+                            git clone https://github.com/piersfinlayson/otbiot-docker && \
+                            cd otbiot-docker/build && \
+                            ./build-container-no-upload.sh $VERSION && \
+                            docker login -u piersfinlayson -p $PASSWORD && \
+                            docker push piersfinlayson/build-$ARCH:$VERSION
+                            '''
+                        }
+                    }
+                }
+                stage('armv6l')
+                {
+                    agent {
+                        label 'armv6l'
+                    }
+                    steps {
+                        withCredentials([usernamePassword(credentialsId: 'docker.piersfinlayson', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+                            sh '''
+                            export ARCH=armv6l && \
+                            export VERSION=0.3.6 && \
+                            rm -fr otbiot-docker && \
+                            git clone https://github.com/piersfinlayson/otbiot-docker && \
+                            cd otbiot-docker/build && \
+                            ./build-container-no-upload.sh $VERSION && \
+                            docker login -u piersfinlayson -p $PASSWORD && \
+                            docker push piersfinlayson/build-$ARCH:$VERSION
+                            '''
+                        }
+                    }
+                }
+            }
+        }
+        stage('Make Manifests') {
+            agent {
+                label 'amd64'
+            }
+            steps {
+                withCredentials([usernamePassword(credentialsId: 'docker.piersfinlayson', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+                    sh '''
+                    export VERSION=0.3.6 && \
+                    export DOCKER_CLI_EXPERIMENTAL=enabled && \
+                    rm -fr otbiot-docker && \
+                    git clone https://github.com/piersfinlayson/otbiot-docker && \
+                    docker login -u piersfinlayson -p $PASSWORD && \
+                    docker manifest create piersfinlayson/build:$VERSION piersfinlayson/build-amd64:$VERSION piersfinlayson/build-armv6l:$VERSION piersfinlayson/build-armv7l:$VERSION && \
+                    docker manifest annotate --arch amd64 --os linux piersfinlayson/build:$VERSION piersfinlayson/build-amd64:$VERSION && \
+                    docker manifest annotate --arch arm --os linux --variant armv6l piersfinlayson/build:$VERSION piersfinlayson/build-armv6l:$VERSION && \
+                    docker manifest annotate --arch arm --os linux --variant armv7l piersfinlayson/build:$VERSION piersfinlayson/build-armv7l:$VERSION && \
+                    docker manifest inspect piersfinlayson/build:$VERSION && \
+                    docker manifest push --purge piersfinlayson/build:$VERSION && \
+                    docker manifest create piersfinlayson/build:latest piersfinlayson/build-amd64:$VERSION piersfinlayson/build-armv6l:$VERSION piersfinlayson/build-armv7l:$VERSION && \
+                    docker manifest annotate --arch amd64 --os linux piersfinlayson/build:latest piersfinlayson/build-amd64:$VERSION && \
+                    docker manifest annotate --arch arm --os linux --variant armv6l piersfinlayson/build:latest piersfinlayson/build-armv6l:$VERSION && \
+                    docker manifest annotate --arch arm --os linux --variant armv7l piersfinlayson/build:latest piersfinlayson/build-armv7l:$VERSION && \
+                    docker manifest inspect piersfinlayson/build:latest && \
+                    docker manifest push --purge piersfinlayson/build:latest && \
+                    docker pull piersfinlayson/build:latest
+                    '''
+                }
+            }
+        }
+    }
+}
