@@ -8,11 +8,12 @@ pipeline {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'github.piersfinlayson', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
                     sh '''
-                        mkdir ~/tmp && \
+                        rm -fr otbiot-docker && \
                         git clone https://piersfinlayson:$PASSWORD@github.com/piersfinlayson/otbiot-docker && \
                         cd otbiot-docker/openapi-generator && \
+                        mkdir -p tmp && \
                         CURV=$(cat ./VERSION) && \
-                        echo $CURV > ~/tmp/CURV && \
+                        echo $CURV > tmp/CURV && \
                         echo "Current version is: $CURV" && \
                         NEWV=$(echo "${CURV%.*}.$((${CURV##*.}+1))") && \
                         echo $NEWV > ./VERSION && \
@@ -28,6 +29,28 @@ pipeline {
                     NEWV=$(cat ./VERSION) && \
                     echo "Building version: $NEWV" && \
                     docker build . -t piersfinlayson/openapi-gen-amd64:$NEWV
+                '''
+            }
+        }
+        stage('Upload') {
+            steps {
+                withCredentials([usernamePassword(credentialsId: 'docker.piersfinlayson', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+                    sh '''
+                        cd otbiot-docker/openapi-generator && \
+                        NEWV=$(cat ./VERSION) && \
+                        echo "Uploading version: $NEWV" && \
+                        docker login -u piersfinlayson -p $PASSWORD && \
+                        docker push piersfinlayson/openapi-gen-amd64:$NEWV && \
+                        docker tag piersfinlayson/openapi-gen-amd64:$NEWV piersfinlayson/openapi-gen-amd64:latest && \
+                        docker push piersfinlayson/openapi-gen-amd64:latest
+                    '''
+                }
+            }
+        }
+        stage('Cleanup') {
+            steps {
+                sh '''
+                    rm -fr otbiot-docker
                 '''
             }
         }
