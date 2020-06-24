@@ -48,12 +48,14 @@ pipeline {
             }
         }
         stage('Update Git Repo') {
-            sh '''
-                cd otbiot-docker/openapi-generator && \
-                git add VERSION && \
-                git commit -m "update VERSION number" && \
-                git push
-            '''
+            steps {
+                sh '''
+                    cd otbiot-docker/openapi-generator && \
+                    git add VERSION && \
+                    git commit -m "update VERSION number" && \
+                    git push
+                '''
+            }
         }
         stage('Cleanup') {
             steps {
