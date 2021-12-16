@@ -1,4 +1,4 @@
-FROM piersfinlayson/esp8266-build-from:2.0
+FROM ubuntu:20.04
 
 LABEL maintainer="Piers Finlayson <piers@piersandkatie.com>"
 
@@ -30,7 +30,7 @@ RUN apt-get update && \
 		automake \
 		bash \
 		bison \
-		bsdtar \
+		libarchive-tools \
 		build-essential \
 		bzip2 \
 		ca-certificates \
@@ -55,10 +55,10 @@ RUN apt-get update && \
 		nano \
 		patch \
 		pkgconf \
-		python \
-		python-dev \
-		python-serial \
-		python-sphinx \
+		python3 \
+		python3-dev \
+		python3-serial \
+		python3-sphinx \
 		sed \
 		software-properties-common \
 		sudo \
