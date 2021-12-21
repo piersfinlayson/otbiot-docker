@@ -38,13 +38,14 @@ else
   echo "No new version of OpenSSL available - latest is $OPENSSL_CUR_VER"
 fi
 
-RUST_NEW_VER=`rustup check |grep -o "$RUST"`
-RUST_NEW_VER_STR=`rustup check`
-if [ -z $RUST_NEW_VER ]
+set +e
+RUST_CHECK=$(rustup check | grep linux | grep -o "Up to date" )
+set -e
+if [ -z "$RUST_CHECK" ]
 then
-  echo "!!!!! New verson of Rust available: $RUST_NEW_VER_STR"
+  echo "!!!!! New verson of Rust available: $(rustup check)"
 else
-  echo "No new version of Rust available - latest is $RUST"
+  echo "No new version of Rust available"
 fi
 
 exec "$@"
