@@ -30,6 +30,6 @@ echo "  PARALLEL_MAKE: ${PARALLEL_MAKE}"
 echo "      other arg: ${ARG2}"
 echo "${VERSION}" > ./VERSION
 
-docker build $ARG2 --build-arg PARALLEL_MAKE=$PARALLEL_MAKE -t piersfinlayson/build-${ARCH}:${VERSION} .
+docker build $ARG2 --build-arg PARALLEL_MAKE="$PARALLEL_MAKE" -t piersfinlayson/build-${ARCH}:${VERSION} .
 
 
