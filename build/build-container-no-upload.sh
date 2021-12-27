@@ -11,10 +11,16 @@ fi
 
 if [ $ARCH == amd64 ]
   then
-    PARALLEL_MAKE="-j4"
+    PARALLEL_MAKE="-j 4"
 else
-  # Run out of RAM doing parallel make on raspberry pis
-  PARALLEL_MAKE=""
+  # Run out of RAM doing parallel make on raspberry pis < 4GB RAM
+  RAM=`cat /proc/meminfo | grep MemTotal |awk '{print $2}'`
+  if [ $RAM -ge 3981592 ]
+  then
+    PARALLEL_MAKE="-j 4"
+  else
+    PARALLEL_MAKE="-j 1"
+  fi
 fi
 
 echo "Create piersfinlayson/build container"
