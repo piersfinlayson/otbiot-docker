@@ -24,7 +24,7 @@ LABEL description="Piers's General Build Container"
 
 # Install all necessary packages
 RUN apt-get update && \
-	DEBIAN_FRONTEND=noninteractive apt-get -y upgrade \
+	DEBIAN_FRONTEND=noninteractive apt-get -y upgrade && \
 	DEBIAN_FRONTEND=noninteractive apt-get install -y \
 		apt-transport-https \
 		autoconf \
