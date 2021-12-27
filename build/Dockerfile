@@ -48,11 +48,6 @@ RUN apt-get update && \
 		help2man \
 		hexedit \
 		i2c-tools \
-		libboost-dev \
-		libboost-filesystem-dev \
-		libboost-system-dev \
-		libboost-test-dev \
-		libevent-dev \
 		libexpat-dev \
 		libtool \
 		libtool-bin \
