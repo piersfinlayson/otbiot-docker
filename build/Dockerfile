@@ -171,7 +171,7 @@ RUN if [ $(arch) = "amd64" ] || [ $(arch) = "x86_64" ] || [ $(arch) = "armv7l" ]
       sudo mv /tmp/build-cross-gcc-armv6.sh . && \
       sudo chown build:build ./build-cross-gcc-armv6.sh && \
       chmod +x ./build-cross-gcc-armv6.sh && \
-      env PARALLEL_MAKE=$PARALLEL_MAKE ./build-cross-gcc-armv6.sh && \
+      env PARALLEL_MAKE="$PARALLEL_MAKE" ./build-cross-gcc-armv6.sh && \
       sudo ln -s /opt/cross/armv6-gnu/bin/arm-unknown-linux-gnueabihf-gcc /usr/local/bin/armv6-linux-gnueabihf-gcc && \
       cd ~/ && \
       sudo rm -fr working; \
@@ -194,7 +194,7 @@ RUN if [ $(arch) = "armhf" ] || [ $(arch) = "armv7l" ] || [ $(arch) = "armv6l" ]
       sudo mv /tmp/build-cross-gcc-x86.sh . && \
       sudo chown build:build ./build-cross-gcc-x86.sh && \
       chmod +x ./build-cross-gcc-x86.sh && \
-      env PARALLEL_MAKE=$PARALLEL_MAKE ./build-cross-gcc-x86.sh && \
+      env PARALLEL_MAKE="$PARALLEL_MAKE" ./build-cross-gcc-x86.sh && \
       sudo ln -s /opt/cross/x86_64-gnu/bin/x86_64-linux-gcc /usr/local/bin/x86_64-linux-gnu-gcc && \
       cd ~/ && \
       sudo rm -fr working; \
