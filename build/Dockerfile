@@ -284,7 +284,7 @@ ENV X86_64_UNKNOWN_LINUX_MUSL_OPENSSL_INCLUDE_DIR=$TARGET_DIR/include
 
 # ARM64 GNU
 ENV PLATFORM=arm64-linux-gnueabihf
-ENV TARGET_CONFIGURE_FLAGS="no-shared no-zlib -fPIC linux-armv4 -march=arm64 -mfpu=vfpv3-d16 -mfloat-abi=hard"
+ENV TARGET_CONFIGURE_FLAGS="no-shared no-zlib -fPIC linux-armv4 -march=armv8-a -mfpu=vfpv3-d16 -mfloat-abi=hard"
 ENV TARGET_DIR=$TMP_OPENSSL_DIR/openssl-$PLATFORM
 RUN cd ~/ && \
     cp -pr $TMP_OPENSSL_DIR/openssl-src working && \
@@ -301,7 +301,7 @@ ENV ARM64_UNKNOWN_LINUX_GNUEABIHF_OPENSSL_INCLUDE_DIR=$TARGET_DIR/include
 
 # ARM64 MUSL
 ENV PLATFORM=arm64-linux-musleabihf
-ENV TARGET_CONFIGURE_FLAGS="no-shared no-zlib -fPIC linux-armv4 -march=arm64 -mfpu=vfpv3-d16 -mfloat-abi=hard"
+ENV TARGET_CONFIGURE_FLAGS="no-shared no-zlib -fPIC linux-armv4 -march=armv8-a -mfpu=vfpv3-d16 -mfloat-abi=hard"
 ENV TARGET_DIR=$TMP_OPENSSL_DIR/openssl-$PLATFORM
 ENV CC_arm64_unknown_linux_musleabihf=$PLATFORM-gcc
 RUN cd ~/ && \
