@@ -204,7 +204,7 @@ ENV CC_x86_64_unknown_linux_gnu=x86_64-linux-gnu-gcc
 ENV TMP_OPENSSL_DIR=/opt/openssl
 RUN sudo mkdir -p $TMP_OPENSSL_DIR && \
 	  sudo chown -R build:build /opt/openssl
-ENV OPENSSL_VERSION="1.1.1m"
+ENV OPENSSL_VERSION="1.1.1o"
 RUN cd $TMP_OPENSSL_DIR && \
     wget https://www.openssl.org/source/openssl-$OPENSSL_VERSION.tar.gz && \
     tar xzf openssl-$OPENSSL_VERSION.tar.gz && \
