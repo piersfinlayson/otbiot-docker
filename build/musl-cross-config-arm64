@@ -1,0 +1,5 @@
+TARGET=arm-linux-musleabihf
+OUTPUT=/opt/cross/arm64
+COMMON_CONFIG += CFLAGS="-g0 -Os" CXXFLAGS="-g0 -Os" LDFLAGS="-s"
+GCC_CONFIG += --with-arch=arm64
+
