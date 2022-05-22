@@ -126,7 +126,7 @@ RUN	cd ~/ && \
     cd ~/musl-cross-make && \
     sed -i "s/MUSL_VER = .*$/MUSL_VER = $MUSL_VER/g" Makefile && \
     cp /tmp/musl-cross-config-armv7 ./config.mak && \
-    sudo rm -f /tmp/musl-cross-config-arvm7 && \
+    sudo rm -f /tmp/musl-cross-config-armv7 && \
     sudo mv /bin/tar /bin/tar.orig && \
     sudo cp /usr/bin/bsdtar /bin/tar && \
     make $PARALLEL_MAKE install && \
@@ -142,7 +142,7 @@ RUN	cd ~/ && \
     cd ~/musl-cross-make && \
     sed -i "s/MUSL_VER = .*$/MUSL_VER = $MUSL_VER/g" Makefile && \
     cp /tmp/musl-cross-config-arm64 ./config.mak && \
-    sudo rm -f /tmp/musl-cross-config-arvm7 && \
+    sudo rm -f /tmp/musl-cross-config-arm64 && \
     sudo mv /bin/tar /bin/tar.orig && \
     sudo cp /usr/bin/bsdtar /bin/tar && \
     make $PARALLEL_MAKE install && \
