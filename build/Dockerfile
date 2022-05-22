@@ -6,8 +6,8 @@ LABEL description="Piers's General Build Container"
 
 #
 # This container supports C and Rust, and supports cross compuilation from
-# the host to x86-64, ARMv7 and ARMv6 platforms, allowing standalone apps
-# to be compiled which can run in empty containers (i.e. FROM scratch).
+# the host to x86-64, ARM64, ARMv7 and ARMv6 platforms, allowing standalone
+# apps to be compiled which can run in empty containers (i.e. FROM scratch).
 #
 # The original Raspberry Pi and the Zero (W) are ARMv6 (with hard floating
 # point support).
@@ -72,7 +72,7 @@ RUN apt-get update && \
 		wget && \
     arch=$(dpkg --print-architecture) && \
 		echo "Architecture: $(arch)" && \
-		if [ $(arch) = "armhf" ] || [ $(arch) = "armv7l" ] || [ $(arch) = "armv6l" ] ; \
+		if [ $(arch) = "armhf" ] || [ $(arch) = "armv7l" ] || [ $(arch) = "armv6l" ] || [ $(arch) = "arm64" ] ; \
 		then \
 		  echo "ARM - not installing gcc-arm-linux-gnueabihf" ; \
 		else \
@@ -93,7 +93,7 @@ RUN useradd -ms /bin/bash build && \
 USER build
 COPY .vimrc /home/build/
 
-# Build ARMv6, ARMv7 and X86_64 versions of MUSL GCC
+# Build ARMv6, ARMv7, ARM64 and X86_64 versions of MUSL GCC
 # bsdtar must be used instead of tar, as untaring can fail in Dockerfiles: https://github.com/docker/hub-feedback/issues/727#issuecomment-299533372
 RUN sudo mkdir -p /opt/cross && \
 	  sudo chown -R build:build /opt/cross
@@ -135,6 +135,22 @@ RUN	cd ~/ && \
     cd ~/ && \
     sudo rm -fr ~/musl-cross-make
 
+COPY musl-cross-config-arm64 /tmp/
+RUN	cd ~/ && \
+    rm -fr musl-cross-make && \
+    git clone https://github.com/richfelker/musl-cross-make.git && \
+    cd ~/musl-cross-make && \
+    sed -i "s/MUSL_VER = .*$/MUSL_VER = $MUSL_VER/g" Makefile && \
+    cp /tmp/musl-cross-config-arm64 ./config.mak && \
+    sudo rm -f /tmp/musl-cross-config-arvm7 && \
+    sudo mv /bin/tar /bin/tar.orig && \
+    sudo cp /usr/bin/bsdtar /bin/tar && \
+    make $PARALLEL_MAKE install && \
+    sudo rm /bin/tar && \
+    sudo mv /bin/tar.orig /bin/tar && \
+    cd ~/ && \
+    sudo rm -fr ~/musl-cross-make
+
 COPY musl-cross-config-x86_64 /tmp/
 RUN	cd ~/ && \
     rm -fr musl-cross-make && \
@@ -157,7 +173,7 @@ RUN sudo ln -s /opt/cross/armv6/bin/arm-linux-musleabihf-gcc /usr/local/bin/armv
 
 # We need an ARMv6 version of GCC, as the Ubuntu shipped one is for ARMv7
 COPY build-cross-gcc-armv6.sh /tmp/
-RUN if [ $(arch) = "amd64" ] || [ $(arch) = "x86_64" ] || [ $(arch) = "armv7l" ] ; \
+RUN if [ $(arch) = "amd64" ] || [ $(arch) = "x86_64" ] || [ $(arch) = "armv7l" ] || [ $(arch) = "arm64" ] ; \
 		then \
       echo "Build ARMv6 gnu gcc" && \
       cd ~/ && \
@@ -180,7 +196,7 @@ ENV CC_arm_unknown_linux_gnueabihf=armv6-linux-gnueabihf-gcc
 # On ARM we need to build a x86_64 version of gnu gcc
 # Based on https://preshing.com/20141119/how-to-build-a-gcc-cross-compiler/
 COPY build-cross-gcc-x86.sh /tmp/
-RUN if [ $(arch) = "armhf" ] || [ $(arch) = "armv7l" ] || [ $(arch) = "armv6l" ] ; \
+RUN if [ $(arch) = "armhf" ] || [ $(arch) = "armv7l" ] || [ $(arch) = "armv6l" ] || [ $(arch) = "arm64" ] ; \
 		then \
 		  echo "ARM - build x86_64 gnu gcc" && \
       cd ~/ && \
@@ -212,7 +228,7 @@ RUN cd $TMP_OPENSSL_DIR && \
     mv openssl-$OPENSSL_VERSION openssl-src
 
 # Sort out X86 ranlib - only really needed for compiling x86 on ARM
-RUN if [ $(arch) = "armhf" ] || [ $(arch) = "armv7l" ] || [ $(arch) = "armv6l" ] ; \
+RUN if [ $(arch) = "armhf" ] || [ $(arch) = "armv7l" ] || [ $(arch) = "armv6l" ] || [ $(arch) = "arm64" ] ; \
     then \
       echo "ARM - linking to x86_64-linux-ranlib" && \
       sudo ln -s /opt/cross/x86_64/bin/x86_64-linux-musl-ranlib /usr/local/bin/x86_64-linux-musl-ranlib && \
@@ -265,6 +281,41 @@ RUN cd ~/ && \
 ENV X86_64_UNKNOWN_LINUX_MUSL_OPENSSL_DIR=$TARGET_DIR
 ENV X86_64_UNKNOWN_LINUX_MUSL_OPENSSL_LIB_DIR=$TARGET_DIR/lib
 ENV X86_64_UNKNOWN_LINUX_MUSL_OPENSSL_INCLUDE_DIR=$TARGET_DIR/include
+
+# ARM64 GNU
+ENV PLATFORM=arm64-linux-gnueabihf
+ENV TARGET_CONFIGURE_FLAGS="no-shared no-zlib -fPIC linux-armv4 -march=arm64-a -mfpu=vfpv3-d16 -mfloat-abi=hard"
+ENV TARGET_DIR=$TMP_OPENSSL_DIR/openssl-$PLATFORM
+RUN cd ~/ && \
+    cp -pr $TMP_OPENSSL_DIR/openssl-src working && \
+    cd working && \
+    env CC=arm-linux-gnueabihf-gcc ./Configure --openssldir=$TARGET_DIR --prefix=$TARGET_DIR $TARGET_CONFIGURE_FLAGS && \
+    env make $PARALLEL_MAKE depend && \
+    env make $PARALLEL_MAKE && \
+    env make install && \
+    cd ~/ && \
+    rm -fr working
+ENV ARM64_UNKNOWN_LINUX_GNUEABIHF_OPENSSL_DIR=$TARGET_DIR
+ENV ARM64_UNKNOWN_LINUX_GNUEABIHF_OPENSSL_LIB_DIR=$TARGET_DIR/lib
+ENV ARM64_UNKNOWN_LINUX_GNUEABIHF_OPENSSL_INCLUDE_DIR=$TARGET_DIR/include
+
+# ARM64 MUSL
+ENV PLATFORM=arm64-linux-musleabihf
+ENV TARGET_CONFIGURE_FLAGS="no-shared no-zlib -fPIC linux-armv4 -march=arm64-a -mfpu=vfpv3-d16 -mfloat-abi=hard"
+ENV TARGET_DIR=$TMP_OPENSSL_DIR/openssl-$PLATFORM
+ENV CC_arm64_unknown_linux_musleabihf=$PLATFORM-gcc
+RUN cd ~/ && \
+    cp -pr $TMP_OPENSSL_DIR/openssl-src working && \
+    cd working && \
+    env CC=$CC_arm64_unknown_linux_musleabihf ./Configure --openssldir=$TARGET_DIR --prefix=$TARGET_DIR $TARGET_CONFIGURE_FLAGS && \
+    env make $PARALLEL_MAKE depend && \
+    env make $PARALLEL_MAKE && \
+    env make install && \
+    cd ~/ && \
+    rm -fr working
+ENV ARM64_UNKNOWN_LINUX_MUSLEABIHF_OPENSSL_DIR=$TARGET_DIR
+ENV ARM64_UNKNOWN_LINUX_MUSLEABIHF_OPENSSL_LIB_DIR=$TARGET_DIR/lib
+ENV ARM64_UNKNOWN_LINUX_MUSLEABIHF_OPENSSL_INCLUDE_DIR=$TARGET_DIR/include
 
 # ARMv7 GNU
 ENV PLATFORM=armv7-linux-gnueabihf
@@ -346,9 +397,11 @@ RUN cd /home/build && \
 		rm /home/build/rust.sh
 ENV PATH="/home/build/.cargo/bin:/usr/local/musl/bin:${PATH}"
 RUN rustup target add x86_64-unknown-linux-gnu && \
+    rustup target add arm64-unknown-linux-gnueabihf && \
     rustup target add armv7-unknown-linux-gnueabihf && \
     rustup target add arm-unknown-linux-gnueabihf && \
     rustup target add x86_64-unknown-linux-musl && \
+		rustup target add arm64-unknown-linux-musleabihf && \
 		rustup target add armv7-unknown-linux-musleabihf && \
 		rustup target add arm-unknown-linux-musleabihf && \
     cargo install mdbook && \
@@ -356,6 +409,8 @@ RUN rustup target add x86_64-unknown-linux-gnu && \
     rustup component add clippy; exit 0
 RUN echo "[target.x86_64-unknown-linux-gnu]\nlinker = \"x86_64-linux-gnu-gcc\"\n" >> /home/build/.cargo/config && \
     echo "[target.x86_64-unknown-linux-musl]\nlinker = \"x86_64-linux-musl-gcc\"\n" >> /home/build/.cargo/config && \
+		echo "[target.arm64-unknown-linux-gnueabihf]\nlinker = \"arm64-linux-gnueabihf-gcc\"\n" >> /home/build/.cargo/config && \
+		echo "[target.arm64-unknown-linux-musleabihf]\nlinker = \"arm64-linux-musleabihf-gcc\"\n" >> /home/build/.cargo/config && \
 		echo "[target.armv7-unknown-linux-gnueabihf]\nlinker = \"arm-linux-gnueabihf-gcc\"\n" >> /home/build/.cargo/config && \
 		echo "[target.armv7-unknown-linux-musleabihf]\nlinker = \"armv7-linux-musleabihf-gcc\"\n" >> /home/build/.cargo/config && \
     echo "[target.arm-unknown-linux-gnueabihf]\nlinker = \"armv6-linux-gnueabihf-gcc\"\n" >> /home/build/.cargo/config && \
