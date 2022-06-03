@@ -233,7 +233,7 @@ RUN if [ $(arch) = "amd64" ] || [ $(arch) = "x86_64" ] || [ $(arch) = "armv7l" ]
       sudo rm -fr working; \
     else \
 		  echo "ARMv8/ARM64 - not building ARMv8/ARM64 gnu gcc" && \
-      sudo ln -s /usr/bin/gcc /usr/local/bin/armv8-linux-gnueabihf-gcc && \
+      sudo ln -s /usr/bin/gcc /usr/local/bin/arm64-linux-gnueabihf-gcc && \
       sudo rm -fr /tmp/build-cross-gcc-arm64.sh; \
 		fi    
 ENV CC_armv8_unknown_linux_gnueabihf=arm64-linux-gnueabihf-gcc
