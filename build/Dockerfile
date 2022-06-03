@@ -236,7 +236,7 @@ RUN if [ $(arch) = "amd64" ] || [ $(arch) = "x86_64" ] || [ $(arch) = "armv7l" ]
       sudo ln -s /usr/bin/gcc /usr/local/bin/armv8-linux-gnueabihf-gcc && \
       sudo rm -fr /tmp/build-cross-gcc-arm64.sh; \
 		fi    
-ENV CC_armv8_unknown_linux_gnueabihf=armv8-linux-gnueabihf-gcc
+ENV CC_armv8_unknown_linux_gnueabihf=arm64-linux-gnueabihf-gcc
 
 # Build x86 GCC
 COPY build-cross-gcc-x86.sh /tmp/
