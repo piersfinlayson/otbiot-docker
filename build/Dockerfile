@@ -75,9 +75,9 @@ RUN apt-get update && \
 		if [ $(arch) = "armhf" ] || [ $(arch) = "armv7l" ] || [ $(arch) = "armv6l" ] || [ $(arch) = "arm64" ] ; \
 		then \
 		  echo "ARM - not installing gcc-arm-linux-gnueabihf" ; \
-		else \
-		  echo "Not ARM - installing gcc-arm-linux-gnueabihf" && \
-		  DEBIAN_FRONTEND=noninteractive apt-get install -y gcc-arm-linux-gnueabihf ; \ 
+		#else \
+		#  echo "Not ARM - installing gcc-arm-linux-gnueabihf" && \
+		#  DEBIAN_FRONTEND=noninteractive apt-get install -y gcc-arm-linux-gnueabihf ; \ 
 		fi && \
     apt-get clean && \
     rm -fr /var/lib/apt/lists/*
@@ -171,7 +171,8 @@ RUN sudo ln -s /opt/cross/armv6/bin/arm-linux-musleabihf-gcc /usr/local/bin/armv
     sudo ln -s /opt/cross/armv7/bin/arm-linux-musleabihf-gcc /usr/local/bin/armv7-linux-musleabihf-gcc && \
     sudo ln -s /opt/cross/x86_64/bin/x86_64-linux-musl-gcc /usr/local/bin/x86_64-linux-musl-gcc
 
-# We need an ARMv6 version of GCC, as the Ubuntu shipped one is for ARMv7
+# Build armv6 GCC
+# Based on https://preshing.com/20141119/how-to-build-a-gcc-cross-compiler/
 COPY build-cross-gcc-armv6.sh /tmp/
 RUN if [ $(arch) = "amd64" ] || [ $(arch) = "x86_64" ] || [ $(arch) = "armv7l" ] || [ $(arch) = "arm64" ] ; \
 		then \
@@ -193,8 +194,51 @@ RUN if [ $(arch) = "amd64" ] || [ $(arch) = "x86_64" ] || [ $(arch) = "armv7l" ]
 		fi    
 ENV CC_arm_unknown_linux_gnueabihf=armv6-linux-gnueabihf-gcc
 
-# On ARM we need to build a x86_64 version of gnu gcc
-# Based on https://preshing.com/20141119/how-to-build-a-gcc-cross-compiler/
+# Build armv7 GCC
+COPY build-cross-gcc-armv7.sh /tmp/
+RUN if [ $(arch) = "amd64" ] || [ $(arch) = "x86_64" ] || [ $(arch) = "armv6l" ] ||  [ $(arch) = "armhf" ] || [ $(arch) = "arm64" ] ; \
+		then \
+      echo "Build ARMv7 gnu gcc" && \
+      cd ~/ && \
+      mkdir working && \
+      cd working && \
+      sudo mv /tmp/build-cross-gcc-armv7.sh . && \
+      sudo chown build:build ./build-cross-gcc-armv7.sh && \
+      chmod +x ./build-cross-gcc-armv7.sh && \
+      env PARALLEL_MAKE="$PARALLEL_MAKE" ./build-cross-gcc-armv7.sh && \
+      sudo ln -s /opt/cross/armv7-gnu/bin/arm-unknown-linux-gnueabihf-gcc /usr/local/bin/armv7-linux-gnueabihf-gcc && \
+      cd ~/ && \
+      sudo rm -fr working; \
+    else \
+		  echo "ARMv7 - not building ARMv7 gnu gcc" && \
+      sudo ln -s /usr/bin/gcc /usr/local/bin/armv7-linux-gnueabihf-gcc && \
+      sudo rm -fr /tmp/build-cross-gcc-armv7.sh; \
+		fi    
+ENV CC_armv7_unknown_linux_gnueabihf=armv7-linux-gnueabihf-gcc
+
+# Build arm64 GCC
+COPY build-cross-gcc-arm64.sh /tmp/
+RUN if [ $(arch) = "amd64" ] || [ $(arch) = "x86_64" ] || [ $(arch) = "armv7l" ] || [ $(arch) = "armv6l" ] ||  [ $(arch) = "armhf" ] ; \
+		then \
+      echo "Build ARMv8/ARM64 gnu gcc" && \
+      cd ~/ && \
+      mkdir working && \
+      cd working && \
+      sudo mv /tmp/build-cross-gcc-arm64.sh . && \
+      sudo chown build:build ./build-cross-gcc-arm64.sh && \
+      chmod +x ./build-cross-gcc-arm64.sh && \
+      env PARALLEL_MAKE="$PARALLEL_MAKE" ./build-cross-gcc-arm64.sh && \
+      sudo ln -s /opt/cross/arm64-gnu/bin/arm-unknown-linux-gnueabihf-gcc /usr/local/bin/arm64-linux-gnueabihf-gcc && \
+      cd ~/ && \
+      sudo rm -fr working; \
+    else \
+		  echo "ARMv8/ARM64 - not building ARMv8/ARM64 gnu gcc" && \
+      sudo ln -s /usr/bin/gcc /usr/local/bin/armv8-linux-gnueabihf-gcc && \
+      sudo rm -fr /tmp/build-cross-gcc-arm64.sh; \
+		fi    
+ENV CC_armv8_unknown_linux_gnueabihf=armv8-linux-gnueabihf-gcc
+
+# Build x86 GCC
 COPY build-cross-gcc-x86.sh /tmp/
 RUN if [ $(arch) = "armhf" ] || [ $(arch) = "armv7l" ] || [ $(arch) = "armv6l" ] || [ $(arch) = "arm64" ] ; \
 		then \
