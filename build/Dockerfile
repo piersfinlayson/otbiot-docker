@@ -333,7 +333,7 @@ ENV TARGET_DIR=$TMP_OPENSSL_DIR/openssl-$PLATFORM
 RUN cd ~/ && \
     cp -pr $TMP_OPENSSL_DIR/openssl-src working && \
     cd working && \
-    env CC=arm-linux-gnueabihf-gcc ./Configure --openssldir=$TARGET_DIR --prefix=$TARGET_DIR $TARGET_CONFIGURE_FLAGS && \
+    env CC=$CC_armv8_unknown_linux_gnueabihf ./Configure --openssldir=$TARGET_DIR --prefix=$TARGET_DIR $TARGET_CONFIGURE_FLAGS && \
     env make $PARALLEL_MAKE depend && \
     env make $PARALLEL_MAKE && \
     env make install && \
@@ -368,7 +368,7 @@ ENV TARGET_DIR=$TMP_OPENSSL_DIR/openssl-$PLATFORM
 RUN cd ~/ && \
     cp -pr $TMP_OPENSSL_DIR/openssl-src working && \
     cd working && \
-    env CC=arm-linux-gnueabihf-gcc ./Configure --openssldir=$TARGET_DIR --prefix=$TARGET_DIR $TARGET_CONFIGURE_FLAGS && \
+    env CC=$CC_armv7_unknown_linux_gnueabihf ./Configure --openssldir=$TARGET_DIR --prefix=$TARGET_DIR $TARGET_CONFIGURE_FLAGS && \
     env make $PARALLEL_MAKE depend && \
     env make $PARALLEL_MAKE && \
     env make install && \
