@@ -228,7 +228,7 @@ RUN if [ $(arch) = "amd64" ] || [ $(arch) = "x86_64" ] || [ $(arch) = "armv7l" ]
       sudo chown build:build ./build-cross-gcc-arm64.sh && \
       chmod +x ./build-cross-gcc-arm64.sh && \
       env PARALLEL_MAKE="$PARALLEL_MAKE" ./build-cross-gcc-arm64.sh && \
-      sudo ln -s /opt/cross/arm64-gnu/bin/arm-unknown-linux-gnueabihf-gcc /usr/local/bin/arm64-linux-gnueabihf-gcc && \
+      sudo ln -s /opt/cross/armv8-gnu/bin/arm-unknown-linux-gnueabihf-gcc /usr/local/bin/arm64-linux-gnueabihf-gcc && \
       cd ~/ && \
       sudo rm -fr working; \
     else \
