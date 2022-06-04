@@ -169,6 +169,7 @@ RUN	cd ~/ && \
 
 RUN sudo ln -s /opt/cross/armv6/bin/arm-linux-musleabihf-gcc /usr/local/bin/armv6-linux-musleabihf-gcc && \
     sudo ln -s /opt/cross/armv7/bin/arm-linux-musleabihf-gcc /usr/local/bin/armv7-linux-musleabihf-gcc && \
+    sudo ln -s /opt/cross/armv8/bin/arm-linux-musleabihf-gcc /usr/local/bin/armv8-linux-musleabihf-gcc && \
     sudo ln -s /opt/cross/x86_64/bin/x86_64-linux-musl-gcc /usr/local/bin/x86_64-linux-musl-gcc
 
 # Build armv6 GCC
