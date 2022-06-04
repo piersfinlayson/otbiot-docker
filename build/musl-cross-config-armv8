@@ -1,5 +1,5 @@
 TARGET=armv8-linux-musleabihf
 OUTPUT=/opt/cross/armv8
 COMMON_CONFIG += CFLAGS="-g0 -Os" CXXFLAGS="-g0 -Os" LDFLAGS="-s"
-GCC_CONFIG += --with-arch=armv8-a+simd --with-cpu=cortex-a72 --with-float=hard --with-fpu=vfpv3-d16
+GCC_CONFIG += --with-cpu=cortex-a72 --with-float=hard --with-fpu=vfpv3-d16
 
