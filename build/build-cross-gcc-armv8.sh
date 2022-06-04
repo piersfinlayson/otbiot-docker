@@ -17,7 +17,7 @@ TARGET=arm-unknown-linux-gnueabihf
 USE_NEWLIB=0
 LINUX_ARCH=arm
 # libmpx doesn't compile - PATH_MAX not defined
-CONFIGURATION_OPTIONS="--disable-multilib --disable-libmpx --with-arch=armv8-a+simd --with-fpu=vfpv3-d16 --with-float=hard -mcpu=cortex-a72+simd"
+CONFIGURATION_OPTIONS="--disable-multilib --disable-libmpx --with-arch=armv8-a+simd --with-cpu=cortex-a72+simd --with-fpu=vfpv3-d16 --with-float=hard"
 BINUTILS_VERSION=binutils-2.31
 GCC_VERSION=gcc-8.3.0
 LINUX_KERNEL_VERSION=linux-4.9.35
