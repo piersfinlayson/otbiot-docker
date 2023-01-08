@@ -11,7 +11,7 @@ fi
 
 if [ $ARCH == amd64 ]
   then
-    PARALLEL_MAKE="-j 4"
+    PARALLEL_MAKE="-j 8"
 else
   # Run out of RAM doing parallel make on raspberry pis < 4GB RAM
   RAM=`cat /proc/meminfo | grep MemTotal |awk '{print $2}'`
