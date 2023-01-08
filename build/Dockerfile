@@ -1,4 +1,4 @@
-FROM ubuntu:20.04
+FROM ubuntu:22.04
 
 LABEL maintainer="Piers Finlayson <piers@piersandkatie.com>"
 
@@ -266,7 +266,7 @@ ENV CC_x86_64_unknown_linux_gnu=x86_64-linux-gnu-gcc
 ENV TMP_OPENSSL_DIR=/opt/openssl
 RUN sudo mkdir -p $TMP_OPENSSL_DIR && \
 	  sudo chown -R build:build /opt/openssl
-ENV OPENSSL_VERSION="1.1.1o"
+ENV OPENSSL_VERSION="1.1.1s"
 RUN cd $TMP_OPENSSL_DIR && \
     wget https://www.openssl.org/source/openssl-$OPENSSL_VERSION.tar.gz && \
     tar xzf openssl-$OPENSSL_VERSION.tar.gz && \
